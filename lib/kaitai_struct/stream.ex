@@ -57,7 +57,7 @@ defmodule KaitaiStruct.Stream do
   def read_s2be(pid), do: GenServer.call(pid, {:read, :signed_integer_be, 2})
 
   @doc "Read signed integer (2 bytes, big-endian) from stream. Raises `KaitaiStruct.Stream.ReadError` on failure"
-  @spec read_s2be!(stream :: pid()) :: {:ok, integer()} | {:error, read_error()}
+  @spec read_s2be!(stream :: pid()) :: integer()
   def read_s2be!(pid), do: read_s2be(pid) |> respond_or_raise!()
 
   @doc "Read signed integer (4 bytes, big-endian) from stream."
@@ -65,7 +65,7 @@ defmodule KaitaiStruct.Stream do
   def read_s4be(pid), do: GenServer.call(pid, {:read, :signed_integer_be, 4})
 
   @doc "Read signed integer (4 bytes, big-endian) from stream. Raises `KaitaiStruct.Stream.ReadError` on failure"
-  @spec read_s4be!(stream :: pid()) :: {:ok, integer()} | {:error, read_error()}
+  @spec read_s4be!(stream :: pid()) :: integer()
   def read_s4be!(pid), do: read_s4be(pid) |> respond_or_raise!()
 
   @doc "Read signed integer (8 bytes, big-endian) from stream."
@@ -73,7 +73,7 @@ defmodule KaitaiStruct.Stream do
   def read_s8be(pid), do: GenServer.call(pid, {:read, :signed_integer_be, 8})
 
   @doc "Read signed integer (8 bytes, big-endian) from stream. Raises `KaitaiStruct.Stream.ReadError` on failure"
-  @spec read_s8be!(stream :: pid()) :: {:ok, integer()} | {:error, read_error()}
+  @spec read_s8be!(stream :: pid()) :: integer()
   def read_s8be!(pid), do: read_s8be(pid) |> respond_or_raise!()
 
   @doc "Read signed integer (2 bytes, little-endian) from stream."
@@ -81,7 +81,7 @@ defmodule KaitaiStruct.Stream do
   def read_s2le(pid), do: GenServer.call(pid, {:read, :signed_integer_le, 2})
 
   @doc "Read signed integer (2 bytes, little-endian) from stream. Raises `KaitaiStruct.Stream.ReadError` on failure"
-  @spec read_s2le!(stream :: pid()) :: {:ok, integer()} | {:error, read_error()}
+  @spec read_s2le!(stream :: pid()) :: integer()
   def read_s2le!(pid), do: read_s2le(pid) |> respond_or_raise!()
 
   @doc "Read signed integer (4 bytes, little-endian) from stream."
@@ -89,7 +89,7 @@ defmodule KaitaiStruct.Stream do
   def read_s4le(pid), do: GenServer.call(pid, {:read, :signed_integer_le, 4})
 
   @doc "Read signed integer (4 bytes, little-endian) from stream. Raises `KaitaiStruct.Stream.ReadError` on failure"
-  @spec read_s4le!(stream :: pid()) :: {:ok, integer()} | {:error, read_error()}
+  @spec read_s4le!(stream :: pid()) :: integer()
   def read_s4le!(pid), do: read_s4le(pid) |> respond_or_raise!()
 
   @doc "Read unsigned integer (1 byte) from stream."
@@ -97,7 +97,7 @@ defmodule KaitaiStruct.Stream do
   def read_u1(pid), do: GenServer.call(pid, {:read, :unsigned_integer, 1})
 
   @doc "Read unsigned integer (1 byte) from stream. Raises `KaitaiStruct.Stream.ReadError` on failure"
-  @spec read_u1!(stream :: pid()) :: {:ok, non_neg_integer()} | {:error, read_error()}
+  @spec read_u1!(stream :: pid()) :: non_neg_integer()
   def read_u1!(pid), do: read_u1(pid) |> respond_or_raise!()
 
   @doc "Read unsigned integer (2 bytes, big-endian) from stream."
@@ -105,7 +105,7 @@ defmodule KaitaiStruct.Stream do
   def read_u2be(pid), do: GenServer.call(pid, {:read, :unsigned_integer_be, 2})
 
   @doc "Read unsigned integer (2 bytes, big-endian) from stream. Raises `KaitaiStruct.Stream.ReadError` on failure"
-  @spec read_u2be!(stream :: pid()) :: {:ok, non_neg_integer()} | {:error, read_error()}
+  @spec read_u2be!(stream :: pid()) :: non_neg_integer()
   def read_u2be!(pid), do: read_u2be(pid) |> respond_or_raise!()
 
   @doc "Read unsigned integer (4 bytes, big-endian) from stream."
@@ -113,7 +113,7 @@ defmodule KaitaiStruct.Stream do
   def read_u4be(pid), do: GenServer.call(pid, {:read, :unsigned_integer_be, 4})
 
   @doc "Read unsigned integer (4 bytes, big-endian) from stream. Raises `KaitaiStruct.Stream.ReadError` on failure"
-  @spec read_u4be!(stream :: pid()) :: {:ok, non_neg_integer()} | {:error, read_error()}
+  @spec read_u4be!(stream :: pid()) :: non_neg_integer()
   def read_u4be!(pid), do: read_u4be(pid) |> respond_or_raise!()
 
   @doc "Read unsigned integer (8 bytes, big-endian) from stream."
@@ -121,7 +121,7 @@ defmodule KaitaiStruct.Stream do
   def read_u8be(pid), do: GenServer.call(pid, {:read, :unsigned_integer_be, 8})
 
   @doc "Read unsigned integer (8 bytes, big-endian) from stream. Raises `KaitaiStruct.Stream.ReadError` on failure"
-  @spec read_u8be!(stream :: pid()) :: {:ok, non_neg_integer()} | {:error, read_error()}
+  @spec read_u8be!(stream :: pid()) :: non_neg_integer()
   def read_u8be!(pid), do: read_u8be(pid) |> respond_or_raise!()
 
   @doc "Read unsigned integer (2 bytes, little-endian) from stream."
@@ -129,7 +129,7 @@ defmodule KaitaiStruct.Stream do
   def read_u2le(pid), do: GenServer.call(pid, {:read, :unsigned_integer_le, 2})
 
   @doc "Read unsigned integer (2 bytes, little-endian) from stream. Raises `KaitaiStruct.Stream.ReadError` on failure"
-  @spec read_u2le!(stream :: pid()) :: {:ok, non_neg_integer()} | {:error, read_error()}
+  @spec read_u2le!(stream :: pid()) :: non_neg_integer()
   def read_u2le!(pid), do: read_u2le(pid) |> respond_or_raise!()
 
   @doc "Read unsigned integer (4 bytes, little-endian) from stream."
@@ -137,7 +137,7 @@ defmodule KaitaiStruct.Stream do
   def read_u4le(pid), do: GenServer.call(pid, {:read, :unsigned_integer_le, 4})
 
   @doc "Read unsigned integer (4 bytes, little-endian) from stream. Raises `KaitaiStruct.Stream.ReadError` on failure"
-  @spec read_u4le!(stream :: pid()) :: {:ok, non_neg_integer()} | {:error, read_error()}
+  @spec read_u4le!(stream :: pid()) :: non_neg_integer()
   def read_u4le!(pid), do: read_u4le(pid) |> respond_or_raise!()
 
   @doc "Read unsigned integer (8 bytes, little-endian) from stream."
@@ -145,7 +145,7 @@ defmodule KaitaiStruct.Stream do
   def read_u8le(pid), do: GenServer.call(pid, {:read, :unsigned_integer_le, 8})
 
   @doc "Read unsigned integer (8 bytes, little-endian) from stream. Raises `KaitaiStruct.Stream.ReadError` on failure"
-  @spec read_u8le!(stream :: pid()) :: {:ok, non_neg_integer()} | {:error, read_error()}
+  @spec read_u8le!(stream :: pid()) :: non_neg_integer()
   def read_u8le!(pid), do: read_u8le(pid) |> respond_or_raise!()
 
   @doc "Read float (4 bytes, big-endian) from stream."
@@ -153,7 +153,7 @@ defmodule KaitaiStruct.Stream do
   def read_f4be(pid), do: GenServer.call(pid, {:read, :float_be, 4})
 
   @doc "Read float (4 bytes, big-endian) from stream. Raises `KaitaiStruct.Stream.ReadError` on failure"
-  @spec read_f4be!(stream :: pid()) :: {:ok, float()} | {:error, read_error()}
+  @spec read_f4be!(stream :: pid()) :: float()
   def read_f4be!(pid), do: read_f4be(pid) |> respond_or_raise!()
 
   @doc "Read float (8 bytes, big-endian) from stream."
@@ -161,7 +161,7 @@ defmodule KaitaiStruct.Stream do
   def read_f8be(pid), do: GenServer.call(pid, {:read, :float_be, 8})
 
   @doc "Read float (8 bytes, big-endian) from stream. Raises `KaitaiStruct.Stream.ReadError` on failure"
-  @spec read_f8be!(stream :: pid()) :: {:ok, float()} | {:error, read_error()}
+  @spec read_f8be!(stream :: pid()) :: float()
   def read_f8be!(pid), do: read_f8be(pid) |> respond_or_raise!()
 
   @doc "Read float (4 bytes, little-endian) from stream."
@@ -169,7 +169,7 @@ defmodule KaitaiStruct.Stream do
   def read_f4le(pid), do: GenServer.call(pid, {:read, :float_le, 4})
 
   @doc "Read float (4 bytes, little-endian) from stream. Raises `KaitaiStruct.Stream.ReadError` on failure"
-  @spec read_f4le!(stream :: pid()) :: {:ok, float()} | {:error, read_error()}
+  @spec read_f4le!(stream :: pid()) :: float()
   def read_f4le!(pid), do: read_f4le(pid) |> respond_or_raise!()
 
   @doc "Read float (8 bytes, little-endian) from stream."
@@ -177,7 +177,7 @@ defmodule KaitaiStruct.Stream do
   def read_f8le(pid), do: GenServer.call(pid, {:read, :float_le, 8})
 
   @doc "Read float (8 bytes, little-endian) from stream."
-  @spec read_f8le!(stream :: pid()) :: {:ok, float()} | {:error, read_error()}
+  @spec read_f8le!(stream :: pid()) :: float()
   def read_f8le!(pid), do: read_f8le(pid) |> respond_or_raise!()
 
   @doc "Re-align to bytes after moving to an non-standard bit alignment"
@@ -190,8 +190,7 @@ defmodule KaitaiStruct.Stream do
   def read_bits_int(pid, n), do: GenServer.call(pid, {:read, :bit_int, n})
 
   @doc "Read an integer (composed of N bits) from stream. Raises `KaitaiStruct.Stream.ReadError` on failure"
-  @spec read_bits_int!(stream :: pid(), n :: non_neg_integer()) ::
-          {:ok, integer()} | {:error, read_error()}
+  @spec read_bits_int!(stream :: pid(), n :: non_neg_integer()) :: integer()
   def read_bits_int!(pid, n), do: read_bits_int(pid, n) |> respond_or_raise!()
 
   @doc "Read an array of `n` bits from stream."
@@ -200,26 +199,23 @@ defmodule KaitaiStruct.Stream do
   def read_bits_array(pid, n), do: GenServer.call(pid, {:read, :bit_array, n})
 
   @doc "Read an array of `n` bits from stream. Raises `KaitaiStruct.Stream.ReadError` on failure"
-  @spec read_bits_array!(stream :: pid(), n :: non_neg_integer()) ::
-          {:ok, [boolean()]} | {:error, read_error()}
+  @spec read_bits_array!(stream :: pid(), n :: non_neg_integer()) :: [boolean()]
   def read_bits_array!(pid, n), do: read_bits_array(pid, n) |> respond_or_raise!()
 
   @doc "An array of `n` bytes from stream."
-  @spec read_bytes_array(stream :: pid(), n :: non_neg_integer()) ::
-          {:ok, [integer()]} | {:error, read_error()}
+  @spec read_bytes_array(stream :: pid(), n :: non_neg_integer()) :: {:ok, binary()} | {:error, read_error()}
   def read_bytes_array(pid, n), do: GenServer.call(pid, {:read, :byte_array, n})
 
   @doc "An array of `n` bytes from stream. Raises `KaitaiStruct.Stream.ReadError` on failure"
-  @spec read_bytes_array!(stream :: pid(), n :: non_neg_integer()) ::
-          {:ok, [integer()]} | {:error, read_error()}
+  @spec read_bytes_array!(stream :: pid(), n :: non_neg_integer()) :: binary()
   def read_bytes_array!(pid, n), do: read_bytes_array(pid, n) |> respond_or_raise!()
 
   @doc "An array of all remaining bytes from stream."
-  @spec read_bytes_full(stream :: pid()) :: {:ok, [integer()]} | {:error, read_error()}
+  @spec read_bytes_full(stream :: pid()) :: {:ok, binary()} | {:error, read_error()}
   def read_bytes_full(pid), do: GenServer.call(pid, {:read, :byte_array_full})
 
   @doc "An array of all remaining bytes from stream. Raises `KaitaiStruct.Stream.ReadError` on failure"
-  @spec read_bytes_full!(stream :: pid()) :: {:ok, [integer()]} | {:error, read_error()}
+  @spec read_bytes_full!(stream :: pid()) :: binary()
   def read_bytes_full!(pid), do: read_bytes_full(pid) |> respond_or_raise!()
 
   @doc """
@@ -233,7 +229,7 @@ defmodule KaitaiStruct.Stream do
           consume_term :: boolean(),
           eos_error :: boolean()
         ) ::
-          {:ok, [integer()]}
+          {:ok, binary()}
           | {:error, read_error()}
           | {:error, :unsupported_encoding}
           | {:error, {:term_encoding_error, term()}}
@@ -265,11 +261,7 @@ defmodule KaitaiStruct.Stream do
           include_term :: boolean(),
           consume_term :: boolean(),
           eos_error :: boolean()
-        ) ::
-          {:ok, [integer()]}
-          | {:error, read_error()}
-          | {:error, :unsupported_encoding}
-          | {:error, {:term_encoding_error, term()}}
+        ) :: binary()
   def read_bytes_term!(pid, encoding, term, include_term, consume_term, eos_error) do
     read_bytes_term(pid, encoding, term, include_term, consume_term, eos_error)
     |> respond_or_raise!()
@@ -283,13 +275,15 @@ defmodule KaitaiStruct.Stream do
   end
 
   @doc "Takes a list of bytes and ensures that the next bytes in the stream are an exact match. Raises `KaitaiStruct.Stream.ReadError` on failure"
-  @spec ensure_fixed_contents!(stream :: pid(), contents :: binary()) ::
-          :ok | {:error, read_error()} | {:error, :fixed_contents_mismatch}
+  @spec ensure_fixed_contents!(stream :: pid(), contents :: binary()) :: :ok
   def ensure_fixed_contents!(pid, contents),
     do: ensure_fixed_contents(pid, contents) |> respond_or_raise!()
 
   defp respond_or_raise!(resp) do
     case resp do
+      :ok ->
+        :ok
+
       {:ok, data} ->
         data
 
@@ -365,7 +359,7 @@ defmodule KaitaiStruct.Stream do
 
   @impl true
   def handle_call({:read, :byte_array, n}, _from, state),
-    do: read_and_reply(state, n, fn data -> data end)
+    do: read_and_reply(state, n, & &1)
 
   @impl true
   def handle_call({:read, :byte_array_full}, _from, state) do
@@ -378,7 +372,7 @@ defmodule KaitaiStruct.Stream do
     bits_left_in_stream = size_bits - pos_bits
     bits_in_buffer = bit_size(buffer)
     total_bytes_left = floor((bits_left_in_stream + bits_in_buffer) / 8)
-    read_and_reply(state, total_bytes_left, fn data -> data end)
+    read_and_reply(state, total_bytes_left, & &1)
   end
 
   @impl true
