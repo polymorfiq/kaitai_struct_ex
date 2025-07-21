@@ -92,6 +92,14 @@ defmodule KaitaiStruct.Stream do
   @spec read_s4le!(stream :: pid()) :: integer()
   def read_s4le!(pid), do: read_s4le(pid) |> respond_or_raise!()
 
+  @doc "Read signed integer (8 bytes, little-endian) from stream."
+  @spec read_s8le(stream :: pid()) :: {:ok, integer()} | {:error, read_error()}
+  def read_s8le(pid), do: GenServer.call(pid, {:read, :signed_integer_le, 8})
+
+  @doc "Read signed integer (8 bytes, little-endian) from stream. Raises `KaitaiStruct.Stream.ReadError` on failure"
+  @spec read_s8le!(stream :: pid()) :: integer()
+  def read_s8le!(pid), do: read_s8le(pid) |> respond_or_raise!()
+
   @doc "Read unsigned integer (1 byte) from stream."
   @spec read_u1(stream :: pid()) :: {:ok, non_neg_integer()} | {:error, read_error()}
   def read_u1(pid), do: GenServer.call(pid, {:read, :unsigned_integer, 1})
