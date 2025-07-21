@@ -7,7 +7,13 @@ defmodule KaitaiStruct.MixProject do
       version: "0.1.0",
       elixir: "~> 1.18",
       start_permanent: Mix.env() == :prod,
-      deps: deps()
+      deps: deps(),
+      licenses: ["MIT"],
+      links: %{
+        "github": "https://github.com/polymorfiq/kaitai_struct_ex"
+      },
+      source_url: "https://github.com/polymorfiq/kaitai_struct_ex",
+      homepage_url: "https://github.com/polymorfiq/kaitai_struct_ex/"
     ]
   end
 
