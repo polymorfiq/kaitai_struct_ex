@@ -22,6 +22,7 @@ defmodule KaitaiStruct.StreamTest do
   test "read_s1!/1 raises ReadError on EOF" do
     stream = binary_stream(<<4::signed-integer-8>>)
     assert 4 = KaitaiStruct.Stream.read_s1!(stream)
+
     assert_raise KaitaiStruct.Stream.ReadError, fn ->
       KaitaiStruct.Stream.read_s1!(stream)
     end
@@ -47,6 +48,7 @@ defmodule KaitaiStruct.StreamTest do
 
   test "read_s2be!/1 raises ReadError on EOF" do
     stream = binary_stream(<<423::signed-integer-8>>)
+
     assert_raise KaitaiStruct.Stream.ReadError, fn ->
       KaitaiStruct.Stream.read_s2be!(stream)
     end

@@ -1,6 +1,6 @@
 defmodule KaitaiStruct do
   @moduledoc """
-  `KataiStruct` is the Elixir runtime for Kaitai
+  `KaitaiStruct` is the Elixir runtime for Kaitai
   """
 
   @native_encoding :utf8

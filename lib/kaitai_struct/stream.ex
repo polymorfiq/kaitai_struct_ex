@@ -203,7 +203,8 @@ defmodule KaitaiStruct.Stream do
   def read_bits_array!(pid, n), do: read_bits_array(pid, n) |> respond_or_raise!()
 
   @doc "An array of `n` bytes from stream."
-  @spec read_bytes_array(stream :: pid(), n :: non_neg_integer()) :: {:ok, binary()} | {:error, read_error()}
+  @spec read_bytes_array(stream :: pid(), n :: non_neg_integer()) ::
+          {:ok, binary()} | {:error, read_error()}
   def read_bytes_array(pid, n), do: GenServer.call(pid, {:read, :byte_array, n})
 
   @doc "An array of `n` bytes from stream. Raises `KaitaiStruct.Stream.ReadError` on failure"
