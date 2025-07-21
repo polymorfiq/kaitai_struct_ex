@@ -8,12 +8,15 @@ defmodule KaitaiStruct.MixProject do
       elixir: "~> 1.18",
       start_permanent: Mix.env() == :prod,
       deps: deps(),
-      licenses: ["MIT"],
-      links: %{
-        "github": "https://github.com/polymorfiq/kaitai_struct_ex"
-      },
-      source_url: "https://github.com/polymorfiq/kaitai_struct_ex",
-      homepage_url: "https://github.com/polymorfiq/kaitai_struct_ex/"
+      package: [
+        description: "Kaitai Struct is a declarative language used for describe various binary data structures, laid out in files or in memory: i.e. binary file formats, network stream packet formats, etc.",
+        licenses: ["MIT"],
+        links: %{
+          "github" => "https://github.com/polymorfiq/kaitai_struct_ex"
+        },
+        source_url: "https://github.com/polymorfiq/kaitai_struct_ex",
+        homepage_url: "https://github.com/polymorfiq/kaitai_struct_ex/"
+      ]
     ]
   end
 
@@ -27,8 +30,7 @@ defmodule KaitaiStruct.MixProject do
   # Run "mix help deps" to learn about dependencies.
   defp deps do
     [
-      # {:dep_from_hexpm, "~> 0.3.0"},
-      # {:dep_from_git, git: "https://github.com/elixir-lang/my_dep.git", tag: "0.1.0"}
+      {:ex_doc, ">= 0.0.0", only: :dev, runtime: false}
     ]
   end
 end
