@@ -1,5 +1,7 @@
 # Kaitai Struct: Runtime library for Elixir
 
+[![Hex Docs](https://img.shields.io/badge/hex-docs-lightgreen.svg)](https://hexdocs.pm/kaitai_struct/)
+
 Kaitai Struct is a declarative language used for describe various binary data structures, laid out in files or in memory: i.e. binary file formats, network stream packet formats, etc.
 
 Further reading:
