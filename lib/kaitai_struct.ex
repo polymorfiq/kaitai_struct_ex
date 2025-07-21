@@ -9,7 +9,7 @@ defmodule KaitaiStruct do
     "UTF-16" => :utf16,
     "UTF-16BE" => {:utf16, :big},
     "UTF-16LE" => {:utf16, :little},
-    "UTF-32" => :utf32,
+    "UTF-32" => :utf32
   }
 
   @spec native_encoding() :: :utf8
@@ -34,9 +34,10 @@ defmodule KaitaiStruct do
   end
 
   @doc "Searches binary for the term and if found, returns a binary terminated at that location. If not found, returns input binary"
-  @spec bytes_terminate(bytes :: binary(), term :: integer(), include_term :: boolean()) :: binary()
+  @spec bytes_terminate(bytes :: binary(), term :: integer(), include_term :: boolean()) ::
+          binary()
   def bytes_terminate(bytes, term, include_term) do
-    terminated = Enum.take_while(:binary.bin_to_list(bytes), & &1 != term)
+    terminated = Enum.take_while(:binary.bin_to_list(bytes), &(&1 != term))
 
     cond do
       Enum.count(terminated) == byte_size(bytes) ->
@@ -50,9 +51,9 @@ defmodule KaitaiStruct do
     end
   end
 
-
   @doc "Takes a binary and specifies its' encoding"
-  @spec bytes_to_str(bytes :: binary(), encoding :: String.t()) :: {:ok, binary()} | {:error, :unsupported_encoding} | {:error, {:encoding_error, term()}}
+  @spec bytes_to_str(bytes :: binary(), encoding :: String.t()) ::
+          {:ok, binary()} | {:error, :unsupported_encoding} | {:error, {:encoding_error, term()}}
   def bytes_to_str(bytes, encoding) do
     if encoding = Map.get(encodings(), encoding) do
       case :unicode.characters_to_binary(bytes, encoding) do

@@ -9,7 +9,8 @@ defmodule KaitaiStruct.MixProject do
       start_permanent: Mix.env() == :prod,
       deps: deps(),
       package: [
-        description: "Kaitai Struct is a declarative language used for describe various binary data structures, laid out in files or in memory: i.e. binary file formats, network stream packet formats, etc.",
+        description:
+          "Kaitai Struct is a declarative language used for describe various binary data structures, laid out in files or in memory: i.e. binary file formats, network stream packet formats, etc.",
         licenses: ["MIT"],
         links: %{
           "github" => "https://github.com/polymorfiq/kaitai_struct_ex"
