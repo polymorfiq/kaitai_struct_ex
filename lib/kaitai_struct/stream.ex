@@ -2,7 +2,7 @@ defmodule KaitaiStruct.Stream do
   @moduledoc """
   Interface for streaming data of known size
 
-  Implements the functions mentioned in the [Kaitai Runtime Specification](https://github.com/kaitai-io/kaitai_struct/tree/216acdec97d16b10d331ba9245366b60a69486d4/runtime)
+  Implements the functions mentioned in the [Kaitai Runtime Specification](https://github.com/kaitai-io/kaitai_struct/tree/216acdec97d16b10d331ba9245366b60a69486d4/runtime), implementing the [Kaitai Stream API](https://doc.kaitai.io/stream_api.html)
   """
 
   use GenServer
@@ -28,8 +28,8 @@ defmodule KaitaiStruct.Stream do
   def eof?(pid), do: GenServer.call(pid, :eof?)
 
   @doc "Moves the stream position forward by `n` bytes, or to the end of the stream. Whichever is smaller."
-  @spec seek(stream :: pid(), n :: non_neg_integer()) :: :ok
-  def seek(pid, n), do: GenServer.cast(pid, {:seek, n})
+  @spec seek(stream :: pid(), n :: non_neg_integer()) :: :ok | {:error, :reached_eof} | {:error, :cannot_seek_backwards}
+  def seek(pid, n), do: GenServer.call(pid, {:seek, n})
 
   @doc "Current position (bytes read) within the stream"
   @spec pos(stream :: pid()) :: non_neg_integer()
@@ -312,12 +312,21 @@ defmodule KaitaiStruct.Stream do
   end
 
   @impl true
-  def handle_cast({:seek, n}, state) do
+  def handle_call({:seek, abs_pos_bytes}, _from, state) do
     stream_state(stream: stream, pos_bits: pos_bits, size_bits: size_bits) = state
-    n = Enum.min([n * 8, size_bits - pos_bits])
+    abs_pos_bits = abs_pos_bytes * 8
 
-    Stream.drop(stream, n) |> Stream.run()
-    {:noreply, stream_state(state, pos_bits: pos_bits + (n * 8))}
+    cond do
+      abs_pos_bits > size_bits ->
+        {:reply, {:error, :reached_eof}, state}
+
+      abs_pos_bits < pos_bits ->
+        {:reply, {:error, :cannot_seek_backwards}, state}
+
+      true ->
+        pos_offset = ceil((abs_pos_bits - pos_bits) / 8)
+        {:reply, :ok, stream_state(state, stream: Stream.drop(stream, pos_offset), pos_bits: abs_pos_bits)}
+    end
   end
 
   @impl true
