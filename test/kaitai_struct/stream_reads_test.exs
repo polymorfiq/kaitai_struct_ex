@@ -494,6 +494,166 @@ defmodule KaitaiStruct.StreamReadsTest do
     end
   end
 
+  test "read_f4be/1 reads 4 bytes properly" do
+    stream = binary_stream(<<-123.0e-5::float-big-32>>)
+    assert {:ok, x} = KaitaiStruct.Stream.read_f4be(stream)
+    assert_in_delta x, -123.0e-5, 0.01
+
+    stream = binary_stream(<<442.0e10::float-big-32, 42.0::float-big-32>>)
+    assert {:ok, x} = KaitaiStruct.Stream.read_f4be(stream)
+    assert_in_delta x, 442.0e10, 500_000
+
+    assert {:ok, 42.0} = KaitaiStruct.Stream.read_f4be(stream)
+  end
+
+  test "read_f4be/1 responds with error on EOF" do
+    stream = binary_stream(<<823::float-big-16>>)
+    assert {:error, :reached_eof} = KaitaiStruct.Stream.read_f4be(stream)
+
+    stream = binary_stream(<<543::float-big-32, 42123::float-big-16>>)
+    assert {:ok, x} = KaitaiStruct.Stream.read_f4be(stream)
+    assert_in_delta x, 543.0, 0.1
+
+    assert {:error, :reached_eof} = KaitaiStruct.Stream.read_f4be(stream)
+  end
+
+  test "read_f4be!/1 reads 4 bytes properly" do
+    stream = binary_stream(<<391_474_976_710_456::float-big-32>>)
+    assert_in_delta 391_474_976_710_456, KaitaiStruct.Stream.read_f4be!(stream), 100_000_000
+
+    stream = binary_stream(<<2041::float-big-32, 64_431_232::float-big-32>>)
+    assert_in_delta 2041.0, KaitaiStruct.Stream.read_f4be!(stream), 0.1
+    assert_in_delta 64_431_232, KaitaiStruct.Stream.read_f4be!(stream), 0.1
+  end
+
+  test "read_f4be!/1 raises ReadError on EOF" do
+    stream = binary_stream(<<4262233::float-big-16>>)
+
+    assert_raise KaitaiStruct.Stream.ReadError, fn ->
+      KaitaiStruct.Stream.read_f4be!(stream)
+    end
+  end
+
+  test "read_f8be/1 reads 8 bytes properly" do
+    stream = binary_stream(<<-123.0e-5::float-big-64>>)
+    assert {:ok, x} = KaitaiStruct.Stream.read_f8be(stream)
+    assert_in_delta x, -123.0e-5, 0.01
+
+    stream = binary_stream(<<442.0e10::float-big-64, 42.0::float-big-64>>)
+    assert {:ok, x} = KaitaiStruct.Stream.read_f8be(stream)
+    assert_in_delta x, 442.0e10, 500_000
+
+    assert {:ok, 42.0} = KaitaiStruct.Stream.read_f8be(stream)
+  end
+
+  test "read_f8be/1 responds with error on EOF" do
+    stream = binary_stream(<<823::float-big-32>>)
+    assert {:error, :reached_eof} = KaitaiStruct.Stream.read_f8be(stream)
+
+    stream = binary_stream(<<543::float-big-64, 42123::float-big-32>>)
+    assert {:ok, x} = KaitaiStruct.Stream.read_f8be(stream)
+    assert_in_delta x, 543.0, 0.1
+
+    assert {:error, :reached_eof} = KaitaiStruct.Stream.read_f8be(stream)
+  end
+
+  test "read_f8be!/1 reads 8 bytes properly" do
+    stream = binary_stream(<<391_474_976_710_456::float-big-64>>)
+    assert_in_delta 391_474_976_710_456, KaitaiStruct.Stream.read_f8be!(stream), 100_000_000
+
+    stream = binary_stream(<<2041::float-big-64, 64_431_232::float-big-64>>)
+    assert_in_delta 2041.0, KaitaiStruct.Stream.read_f8be!(stream), 0.1
+    assert_in_delta 64_431_232, KaitaiStruct.Stream.read_f8be!(stream), 0.1
+  end
+
+  test "read_f8be!/1 raises ReadError on EOF" do
+    stream = binary_stream(<<4262233::float-big-32>>)
+
+    assert_raise KaitaiStruct.Stream.ReadError, fn ->
+      KaitaiStruct.Stream.read_f8be!(stream)
+    end
+  end
+
+  test "read_f4le/1 reads 4 bytes properly" do
+    stream = binary_stream(<<-123.0e-5::float-little-32>>)
+    assert {:ok, x} = KaitaiStruct.Stream.read_f4le(stream)
+    assert_in_delta x, -123.0e-5, 0.01
+
+    stream = binary_stream(<<442.0e10::float-little-32, 42.0::float-little-32>>)
+    assert {:ok, x} = KaitaiStruct.Stream.read_f4le(stream)
+    assert_in_delta x, 442.0e10, 500_000
+
+    assert {:ok, 42.0} = KaitaiStruct.Stream.read_f4le(stream)
+  end
+
+  test "read_f4le/1 responds with error on EOF" do
+    stream = binary_stream(<<823::float-little-16>>)
+    assert {:error, :reached_eof} = KaitaiStruct.Stream.read_f4le(stream)
+
+    stream = binary_stream(<<543::float-little-32, 42123::float-little-16>>)
+    assert {:ok, x} = KaitaiStruct.Stream.read_f4le(stream)
+    assert_in_delta x, 543.0, 0.1
+
+    assert {:error, :reached_eof} = KaitaiStruct.Stream.read_f4le(stream)
+  end
+
+  test "read_f4le!/1 reads 4 bytes properly" do
+    stream = binary_stream(<<391_474_976_710_456::float-little-32>>)
+    assert_in_delta 391_474_976_710_456, KaitaiStruct.Stream.read_f4le!(stream), 100_000_000
+
+    stream = binary_stream(<<2041::float-little-32, 64_431_232::float-little-32>>)
+    assert_in_delta 2041.0, KaitaiStruct.Stream.read_f4le!(stream), 0.1
+    assert_in_delta 64_431_232, KaitaiStruct.Stream.read_f4le!(stream), 0.1
+  end
+
+  test "read_f4le!/1 raises ReadError on EOF" do
+    stream = binary_stream(<<4262233::float-little-16>>)
+
+    assert_raise KaitaiStruct.Stream.ReadError, fn ->
+      KaitaiStruct.Stream.read_f4le!(stream)
+    end
+  end
+
+  test "read_f8le/1 reads 8 bytes properly" do
+    stream = binary_stream(<<-123.0e-5::float-little-64>>)
+    assert {:ok, x} = KaitaiStruct.Stream.read_f8le(stream)
+    assert_in_delta x, -123.0e-5, 0.01
+
+    stream = binary_stream(<<442.0e10::float-little-64, 42.0::float-little-64>>)
+    assert {:ok, x} = KaitaiStruct.Stream.read_f8le(stream)
+    assert_in_delta x, 442.0e10, 500_000
+
+    assert {:ok, 42.0} = KaitaiStruct.Stream.read_f8le(stream)
+  end
+
+  test "read_f8le/1 responds with error on EOF" do
+    stream = binary_stream(<<823::float-little-32>>)
+    assert {:error, :reached_eof} = KaitaiStruct.Stream.read_f8le(stream)
+
+    stream = binary_stream(<<543::float-little-64, 42123::float-little-32>>)
+    assert {:ok, x} = KaitaiStruct.Stream.read_f8le(stream)
+    assert_in_delta x, 543.0, 0.1
+
+    assert {:error, :reached_eof} = KaitaiStruct.Stream.read_f8le(stream)
+  end
+
+  test "read_f8le!/1 reads 8 bytes properly" do
+    stream = binary_stream(<<391_474_976_710_456::float-little-64>>)
+    assert_in_delta 391_474_976_710_456, KaitaiStruct.Stream.read_f8le!(stream), 100_000_000
+
+    stream = binary_stream(<<2041::float-little-64, 64_431_232::float-little-64>>)
+    assert_in_delta 2041.0, KaitaiStruct.Stream.read_f8le!(stream), 0.1
+    assert_in_delta 64_431_232, KaitaiStruct.Stream.read_f8le!(stream), 0.1
+  end
+
+  test "read_f8le!/1 raises ReadError on EOF" do
+    stream = binary_stream(<<4262233::float-little-32>>)
+
+    assert_raise KaitaiStruct.Stream.ReadError, fn ->
+      KaitaiStruct.Stream.read_f8le!(stream)
+    end
+  end
+
   defp binary_stream(bin_data) do
     io_stream = StringIO.open(bin_data) |> then(fn {:ok, io} -> IO.binstream(io, 1) end)
     {:ok, kaitai} = GenServer.start_link(KaitaiStruct.Stream, {io_stream, byte_size(bin_data)})
