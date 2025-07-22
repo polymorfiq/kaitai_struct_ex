@@ -77,7 +77,9 @@ defmodule KaitaiStruct.StreamReadsTest do
     stream = binary_stream(<<16_777_216::signed-integer-big-32>>)
     assert {:ok, 16_777_216} = KaitaiStruct.Stream.read_s4be(stream)
 
-    stream = binary_stream(<<11_717_216::signed-integer-big-32, -12_774_216::signed-integer-big-32>>)
+    stream =
+      binary_stream(<<11_717_216::signed-integer-big-32, -12_774_216::signed-integer-big-32>>)
+
     assert {:ok, 11_717_216} = KaitaiStruct.Stream.read_s4be(stream)
     assert {:ok, -12_774_216} = KaitaiStruct.Stream.read_s4be(stream)
   end
@@ -101,7 +103,7 @@ defmodule KaitaiStruct.StreamReadsTest do
   end
 
   test "read_s4be!/1 raises ReadError on EOF" do
-    stream = binary_stream(<<4262233::signed-integer-big-16>>)
+    stream = binary_stream(<<4_262_233::signed-integer-big-16>>)
 
     assert_raise KaitaiStruct.Stream.ReadError, fn ->
       KaitaiStruct.Stream.read_s4be!(stream)
@@ -112,7 +114,9 @@ defmodule KaitaiStruct.StreamReadsTest do
     stream = binary_stream(<<281_474_976_710_656::signed-integer-big-64>>)
     assert {:ok, 281_474_976_710_656} = KaitaiStruct.Stream.read_s8be(stream)
 
-    stream = binary_stream(<<-281_474_976_710_656::signed-integer-big-64, 42::signed-integer-big-64>>)
+    stream =
+      binary_stream(<<-281_474_976_710_656::signed-integer-big-64, 42::signed-integer-big-64>>)
+
     assert {:ok, -281_474_976_710_656} = KaitaiStruct.Stream.read_s8be(stream)
     assert {:ok, 42} = KaitaiStruct.Stream.read_s8be(stream)
   end
@@ -136,7 +140,7 @@ defmodule KaitaiStruct.StreamReadsTest do
   end
 
   test "read_s8be!/1 raises ReadError on EOF" do
-    stream = binary_stream(<<4262233::signed-integer-big-32>>)
+    stream = binary_stream(<<4_262_233::signed-integer-big-32>>)
 
     assert_raise KaitaiStruct.Stream.ReadError, fn ->
       KaitaiStruct.Stream.read_s8be!(stream)
@@ -182,7 +186,11 @@ defmodule KaitaiStruct.StreamReadsTest do
     stream = binary_stream(<<16_777_216::signed-integer-little-32>>)
     assert {:ok, 16_777_216} = KaitaiStruct.Stream.read_s4le(stream)
 
-    stream = binary_stream(<<11_717_216::signed-integer-little-32, -12_774_216::signed-integer-little-32>>)
+    stream =
+      binary_stream(
+        <<11_717_216::signed-integer-little-32, -12_774_216::signed-integer-little-32>>
+      )
+
     assert {:ok, 11_717_216} = KaitaiStruct.Stream.read_s4le(stream)
     assert {:ok, -12_774_216} = KaitaiStruct.Stream.read_s4le(stream)
   end
@@ -200,13 +208,15 @@ defmodule KaitaiStruct.StreamReadsTest do
     stream = binary_stream(<<82_994_923::signed-integer-little-32>>)
     assert 82_994_923 = KaitaiStruct.Stream.read_s4le!(stream)
 
-    stream = binary_stream(<<1042::signed-integer-little-32, -64_432_232::signed-integer-little-32>>)
+    stream =
+      binary_stream(<<1042::signed-integer-little-32, -64_432_232::signed-integer-little-32>>)
+
     assert 1042 = KaitaiStruct.Stream.read_s4le!(stream)
     assert -64_432_232 = KaitaiStruct.Stream.read_s4le!(stream)
   end
 
   test "read_s4le!/1 raises ReadError on EOF" do
-    stream = binary_stream(<<4262233::signed-integer-little-16>>)
+    stream = binary_stream(<<4_262_233::signed-integer-little-16>>)
 
     assert_raise KaitaiStruct.Stream.ReadError, fn ->
       KaitaiStruct.Stream.read_s4le!(stream)
@@ -217,7 +227,11 @@ defmodule KaitaiStruct.StreamReadsTest do
     stream = binary_stream(<<281_474_976_710_656::signed-integer-little-64>>)
     assert {:ok, 281_474_976_710_656} = KaitaiStruct.Stream.read_s8le(stream)
 
-    stream = binary_stream(<<-281_474_976_710_656::signed-integer-little-64, 42::signed-integer-little-64>>)
+    stream =
+      binary_stream(
+        <<-281_474_976_710_656::signed-integer-little-64, 42::signed-integer-little-64>>
+      )
+
     assert {:ok, -281_474_976_710_656} = KaitaiStruct.Stream.read_s8le(stream)
     assert {:ok, 42} = KaitaiStruct.Stream.read_s8le(stream)
   end
@@ -235,13 +249,15 @@ defmodule KaitaiStruct.StreamReadsTest do
     stream = binary_stream(<<-391_474_976_710_456::signed-integer-little-64>>)
     assert -391_474_976_710_456 = KaitaiStruct.Stream.read_s8le!(stream)
 
-    stream = binary_stream(<<2041::signed-integer-little-64, -64_431_232::signed-integer-little-64>>)
+    stream =
+      binary_stream(<<2041::signed-integer-little-64, -64_431_232::signed-integer-little-64>>)
+
     assert 2041 = KaitaiStruct.Stream.read_s8le!(stream)
     assert -64_431_232 = KaitaiStruct.Stream.read_s8le!(stream)
   end
 
   test "read_s8le!/1 raises ReadError on EOF" do
-    stream = binary_stream(<<4262233::signed-integer-little-32>>)
+    stream = binary_stream(<<4_262_233::signed-integer-little-32>>)
 
     assert_raise KaitaiStruct.Stream.ReadError, fn ->
       KaitaiStruct.Stream.read_s8le!(stream)
@@ -252,7 +268,9 @@ defmodule KaitaiStruct.StreamReadsTest do
     stream = binary_stream(<<255::unsigned-integer-8>>)
     assert {:ok, 255} = KaitaiStruct.Stream.read_u1(stream)
 
-    stream = binary_stream(<<4::unsigned-integer-8, 5::unsigned-integer-8, 6::unsigned-integer-8>>)
+    stream =
+      binary_stream(<<4::unsigned-integer-8, 5::unsigned-integer-8, 6::unsigned-integer-8>>)
+
     assert {:ok, 4} = KaitaiStruct.Stream.read_u1(stream)
     assert {:ok, 5} = KaitaiStruct.Stream.read_u1(stream)
     assert {:ok, 6} = KaitaiStruct.Stream.read_u1(stream)
@@ -269,7 +287,9 @@ defmodule KaitaiStruct.StreamReadsTest do
     stream = binary_stream(<<255::unsigned-integer-8>>)
     assert 255 = KaitaiStruct.Stream.read_u1!(stream)
 
-    stream = binary_stream(<<4::unsigned-integer-8, 5::unsigned-integer-8, 6::unsigned-integer-8>>)
+    stream =
+      binary_stream(<<4::unsigned-integer-8, 5::unsigned-integer-8, 6::unsigned-integer-8>>)
+
     assert 4 = KaitaiStruct.Stream.read_u1!(stream)
     assert 5 = KaitaiStruct.Stream.read_u1!(stream)
     assert 6 = KaitaiStruct.Stream.read_u1!(stream)
@@ -323,7 +343,9 @@ defmodule KaitaiStruct.StreamReadsTest do
     stream = binary_stream(<<4_294_967_295::unsigned-integer-big-32>>)
     assert {:ok, 4_294_967_295} = KaitaiStruct.Stream.read_u4be(stream)
 
-    stream = binary_stream(<<11_717_216::unsigned-integer-big-32, 12_774_216::unsigned-integer-big-32>>)
+    stream =
+      binary_stream(<<11_717_216::unsigned-integer-big-32, 12_774_216::unsigned-integer-big-32>>)
+
     assert {:ok, 11_717_216} = KaitaiStruct.Stream.read_u4be(stream)
     assert {:ok, 12_774_216} = KaitaiStruct.Stream.read_u4be(stream)
   end
@@ -347,7 +369,7 @@ defmodule KaitaiStruct.StreamReadsTest do
   end
 
   test "read_u4be!/1 raises ReadError on EOF" do
-    stream = binary_stream(<<4262233::unsigned-integer-big-16>>)
+    stream = binary_stream(<<4_262_233::unsigned-integer-big-16>>)
 
     assert_raise KaitaiStruct.Stream.ReadError, fn ->
       KaitaiStruct.Stream.read_s4be!(stream)
@@ -358,7 +380,9 @@ defmodule KaitaiStruct.StreamReadsTest do
     stream = binary_stream(<<18_446_744_073_709_551_615::unsigned-integer-big-64>>)
     assert {:ok, 18_446_744_073_709_551_615} = KaitaiStruct.Stream.read_u8be(stream)
 
-    stream = binary_stream(<<281_474_976_710_656::unsigned-integer-big-64, 42::unsigned-integer-big-64>>)
+    stream =
+      binary_stream(<<281_474_976_710_656::unsigned-integer-big-64, 42::unsigned-integer-big-64>>)
+
     assert {:ok, 281_474_976_710_656} = KaitaiStruct.Stream.read_u8be(stream)
     assert {:ok, 42} = KaitaiStruct.Stream.read_u8be(stream)
   end
@@ -428,7 +452,11 @@ defmodule KaitaiStruct.StreamReadsTest do
     stream = binary_stream(<<16_777_216::unsigned-integer-little-32>>)
     assert {:ok, 16_777_216} = KaitaiStruct.Stream.read_u4le(stream)
 
-    stream = binary_stream(<<11_717_216::unsigned-integer-little-32, 12_774_216::unsigned-integer-little-32>>)
+    stream =
+      binary_stream(
+        <<11_717_216::unsigned-integer-little-32, 12_774_216::unsigned-integer-little-32>>
+      )
+
     assert {:ok, 11_717_216} = KaitaiStruct.Stream.read_u4le(stream)
     assert {:ok, 12_774_216} = KaitaiStruct.Stream.read_u4le(stream)
   end
@@ -446,13 +474,15 @@ defmodule KaitaiStruct.StreamReadsTest do
     stream = binary_stream(<<82_994_923::unsigned-integer-little-32>>)
     assert 82_994_923 = KaitaiStruct.Stream.read_u4le!(stream)
 
-    stream = binary_stream(<<1042::unsigned-integer-little-32, 64_432_232::unsigned-integer-little-32>>)
+    stream =
+      binary_stream(<<1042::unsigned-integer-little-32, 64_432_232::unsigned-integer-little-32>>)
+
     assert 1042 = KaitaiStruct.Stream.read_u4le!(stream)
     assert 64_432_232 = KaitaiStruct.Stream.read_u4le!(stream)
   end
 
   test "read_u4le!/1 raises ReadError on EOF" do
-    stream = binary_stream(<<4262233::unsigned-integer-little-16>>)
+    stream = binary_stream(<<4_262_233::unsigned-integer-little-16>>)
 
     assert_raise KaitaiStruct.Stream.ReadError, fn ->
       KaitaiStruct.Stream.read_u4le!(stream)
@@ -463,7 +493,11 @@ defmodule KaitaiStruct.StreamReadsTest do
     stream = binary_stream(<<281_474_976_710_656::unsigned-integer-little-64>>)
     assert {:ok, 281_474_976_710_656} = KaitaiStruct.Stream.read_u8le(stream)
 
-    stream = binary_stream(<<281_474_976_710_656::unsigned-integer-little-64, 42::unsigned-integer-little-64>>)
+    stream =
+      binary_stream(
+        <<281_474_976_710_656::unsigned-integer-little-64, 42::unsigned-integer-little-64>>
+      )
+
     assert {:ok, 281_474_976_710_656} = KaitaiStruct.Stream.read_u8le(stream)
     assert {:ok, 42} = KaitaiStruct.Stream.read_u8le(stream)
   end
@@ -481,13 +515,15 @@ defmodule KaitaiStruct.StreamReadsTest do
     stream = binary_stream(<<391_474_976_710_456::unsigned-integer-little-64>>)
     assert 391_474_976_710_456 = KaitaiStruct.Stream.read_u8le!(stream)
 
-    stream = binary_stream(<<2041::unsigned-integer-little-64, 64_431_232::unsigned-integer-little-64>>)
+    stream =
+      binary_stream(<<2041::unsigned-integer-little-64, 64_431_232::unsigned-integer-little-64>>)
+
     assert 2041 = KaitaiStruct.Stream.read_u8le!(stream)
     assert 64_431_232 = KaitaiStruct.Stream.read_u8le!(stream)
   end
 
   test "read_u8le!/1 raises ReadError on EOF" do
-    stream = binary_stream(<<4262233::unsigned-integer-little-32>>)
+    stream = binary_stream(<<4_262_233::unsigned-integer-little-32>>)
 
     assert_raise KaitaiStruct.Stream.ReadError, fn ->
       KaitaiStruct.Stream.read_u8le!(stream)
@@ -527,7 +563,7 @@ defmodule KaitaiStruct.StreamReadsTest do
   end
 
   test "read_f4be!/1 raises ReadError on EOF" do
-    stream = binary_stream(<<4262233::float-big-16>>)
+    stream = binary_stream(<<4_262_233::float-big-16>>)
 
     assert_raise KaitaiStruct.Stream.ReadError, fn ->
       KaitaiStruct.Stream.read_f4be!(stream)
@@ -567,7 +603,7 @@ defmodule KaitaiStruct.StreamReadsTest do
   end
 
   test "read_f8be!/1 raises ReadError on EOF" do
-    stream = binary_stream(<<4262233::float-big-32>>)
+    stream = binary_stream(<<4_262_233::float-big-32>>)
 
     assert_raise KaitaiStruct.Stream.ReadError, fn ->
       KaitaiStruct.Stream.read_f8be!(stream)
@@ -607,7 +643,7 @@ defmodule KaitaiStruct.StreamReadsTest do
   end
 
   test "read_f4le!/1 raises ReadError on EOF" do
-    stream = binary_stream(<<4262233::float-little-16>>)
+    stream = binary_stream(<<4_262_233::float-little-16>>)
 
     assert_raise KaitaiStruct.Stream.ReadError, fn ->
       KaitaiStruct.Stream.read_f4le!(stream)
@@ -647,7 +683,7 @@ defmodule KaitaiStruct.StreamReadsTest do
   end
 
   test "read_f8le!/1 raises ReadError on EOF" do
-    stream = binary_stream(<<4262233::float-little-32>>)
+    stream = binary_stream(<<4_262_233::float-little-32>>)
 
     assert_raise KaitaiStruct.Stream.ReadError, fn ->
       KaitaiStruct.Stream.read_f8le!(stream)
