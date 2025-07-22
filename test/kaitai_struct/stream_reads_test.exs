@@ -248,12 +248,6 @@ defmodule KaitaiStruct.StreamReadsTest do
     end
   end
 
-
-
-
-
-
-
   test "read_u1/1 reads a byte properly" do
     stream = binary_stream(<<255::unsigned-integer-8>>)
     assert {:ok, 255} = KaitaiStruct.Stream.read_u1(stream)
