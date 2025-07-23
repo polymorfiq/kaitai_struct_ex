@@ -45,4 +45,10 @@ defmodule KaitaiStructTest do
     encoded = :unicode.characters_to_binary("Hello, world!", :unicode, :utf8)
     assert {:error, {:encoding_error, _}} = KaitaiStruct.bytes_to_str(encoded, "UTF-16")
   end
+
+  test "mod/2 correctly runs modulo" do
+    assert 2 = KaitaiStruct.mod(5, 3)
+    assert 6 = KaitaiStruct.mod(32, 13)
+    assert 3 = KaitaiStruct.mod(3, 5)
+  end
 end
