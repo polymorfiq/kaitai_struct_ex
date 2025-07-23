@@ -348,7 +348,7 @@ defmodule KaitaiStruct.Stream do
   @impl true
   def handle_call({:read, :bit_array, n}, _from, state) do
     with {:ok, {bit_array, state}} <- stream_bit_array(state, n) do
-      {:reply, bit_array, state}
+      {:reply, {:ok, bit_array}, state}
     else
       {:error, err} -> {:reply, {:error, err}, state}
     end
@@ -360,7 +360,7 @@ defmodule KaitaiStruct.Stream do
 
     with {:ok, {data, state}} <- stream_bitstring(state, num_bytes_needed, read_bits: n) do
       <<num::integer-size(n)>> = data
-      {:reply, num, state}
+      {:reply, {:ok, num}, state}
     else
       {:error, err} -> {:reply, {:error, err}, state}
     end
@@ -423,7 +423,7 @@ defmodule KaitaiStruct.Stream do
         if eos_error do
           {:halt, {:reply, {:error, :reached_eof}, state}}
         else
-          {:halt, {:reply, buffer_bin, state}}
+          {:halt, {:reply, {:ok, buffer_bin}, state}}
         end
     end)
   end
