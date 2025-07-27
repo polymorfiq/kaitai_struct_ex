@@ -892,9 +892,11 @@ defmodule KaitaiStruct.StreamReadsTest do
     assert 0b1010 = KaitaiStruct.Stream.read_bits_int_be!(stream, 4)
     assert <<0x0F, 0x0B, 0xBE>> = KaitaiStruct.Stream.read_bytes_array!(stream, 3)
     assert <<0xE0>> = KaitaiStruct.Stream.read_bytes_array!(stream, 1)
+
     assert_raise(KaitaiStruct.Stream.ReadError, fn ->
       KaitaiStruct.Stream.read_bytes_array!(stream, 1)
     end)
+
     assert 0b1100 = KaitaiStruct.Stream.read_bits_int_be!(stream, 4)
 
     stream = binary_stream(<<0xB0FC::integer-big-16>>)
@@ -927,7 +929,10 @@ defmodule KaitaiStruct.StreamReadsTest do
     stream = binary_stream(<<0xA0F0BBEE0CDEFF::integer-big-56>>)
 
     assert 0xA = KaitaiStruct.Stream.read_bits_int_be!(stream, 4)
-    assert {:ok, <<0x0F, 0x0B, 0xBE, 0xE0, 0xCD, 0xEF>>} = KaitaiStruct.Stream.read_bytes_full(stream)
+
+    assert {:ok, <<0x0F, 0x0B, 0xBE, 0xE0, 0xCD, 0xEF>>} =
+             KaitaiStruct.Stream.read_bytes_full(stream)
+
     assert 0xF = KaitaiStruct.Stream.read_bits_int_be!(stream, 4)
   end
 
@@ -970,42 +975,65 @@ defmodule KaitaiStruct.StreamReadsTest do
 
   test "read_bytes_term/6 reads until term correctly with the options given" do
     stream = binary_stream("Hello, world!")
-    assert {:ok, "Hello,"} = KaitaiStruct.Stream.read_bytes_term(stream, "UTF-8", ",", true, true, true)
+
+    assert {:ok, "Hello,"} =
+             KaitaiStruct.Stream.read_bytes_term(stream, "UTF-8", ",", true, true, true)
+
     assert " world!" = KaitaiStruct.Stream.read_bytes_full!(stream)
 
     stream = binary_stream("Hello, world!")
-    assert {:ok, "Hello"} = KaitaiStruct.Stream.read_bytes_term(stream, "UTF-8", ",", false, true, true)
+
+    assert {:ok, "Hello"} =
+             KaitaiStruct.Stream.read_bytes_term(stream, "UTF-8", ",", false, true, true)
+
     assert " world!" = KaitaiStruct.Stream.read_bytes_full!(stream)
 
     stream = binary_stream("Hello, world!")
-    assert {:ok, "Hello"} = KaitaiStruct.Stream.read_bytes_term(stream, "UTF-8", ",", false, false, true)
+
+    assert {:ok, "Hello"} =
+             KaitaiStruct.Stream.read_bytes_term(stream, "UTF-8", ",", false, false, true)
+
     assert ", world!" = KaitaiStruct.Stream.read_bytes_full!(stream)
 
     stream = binary_stream("Hello, world!")
-    assert {:ok, "Hello, world!"} = KaitaiStruct.Stream.read_bytes_term(stream, "UTF-8", "@", false, false, false)
+
+    assert {:ok, "Hello, world!"} =
+             KaitaiStruct.Stream.read_bytes_term(stream, "UTF-8", "@", false, false, false)
 
     stream = binary_stream("Hello, world!")
-    assert {:error, :reached_eof} = KaitaiStruct.Stream.read_bytes_term(stream, "UTF-8", "@", false, false, true)
+
+    assert {:error, :reached_eof} =
+             KaitaiStruct.Stream.read_bytes_term(stream, "UTF-8", "@", false, false, true)
 
     stream = binary_stream("Hello, world!")
-    assert {:ok, "Hello"} = KaitaiStruct.Stream.read_bytes_term(stream, "UTF-8", ",", false, true, true)
-    assert {:error, :reached_eof} = KaitaiStruct.Stream.read_bytes_term(stream, "UTF-8", ",", false, true, true)
+
+    assert {:ok, "Hello"} =
+             KaitaiStruct.Stream.read_bytes_term(stream, "UTF-8", ",", false, true, true)
+
+    assert {:error, :reached_eof} =
+             KaitaiStruct.Stream.read_bytes_term(stream, "UTF-8", ",", false, true, true)
 
     stream = binary_stream("Hello, world!")
-    assert {:ok, "Hello"} = KaitaiStruct.Stream.read_bytes_term(stream, "UTF-8", ",", false, false, true)
-    assert {:ok, ""} = KaitaiStruct.Stream.read_bytes_term(stream, "UTF-8", ",", false, false, true)
+
+    assert {:ok, "Hello"} =
+             KaitaiStruct.Stream.read_bytes_term(stream, "UTF-8", ",", false, false, true)
+
+    assert {:ok, ""} =
+             KaitaiStruct.Stream.read_bytes_term(stream, "UTF-8", ",", false, false, true)
   end
 
-
-#"UTF-8" => :utf8,
-#"UTF-16" => :utf16,
-#"UTF-16BE" => {:utf16, :big},
-#"UTF-16LE" => {:utf16, :little},
-#                       "UTF-32" => :utf32
+  # "UTF-8" => :utf8,
+  # "UTF-16" => :utf16,
+  # "UTF-16BE" => {:utf16, :big},
+  # "UTF-16LE" => {:utf16, :little},
+  #                       "UTF-32" => :utf32
 
   test "read_bytes_term/6 works with UTF-8 encoding" do
     stream = binary_stream(:unicode.characters_to_binary("Hello, world!", :unicode, :utf8))
-    assert {:ok, "Hello,"} = KaitaiStruct.Stream.read_bytes_term(stream, "UTF-8", ",", true, true, true)
+
+    assert {:ok, "Hello,"} =
+             KaitaiStruct.Stream.read_bytes_term(stream, "UTF-8", ",", true, true, true)
+
     assert " world!" = KaitaiStruct.Stream.read_bytes_full!(stream)
   end
 
@@ -1014,25 +1042,35 @@ defmodule KaitaiStruct.StreamReadsTest do
     hello = :unicode.characters_to_binary("Hello,", :unicode, :utf16)
     world = :unicode.characters_to_binary(" world!", :unicode, :utf16)
 
-    assert {:ok, ^hello} = KaitaiStruct.Stream.read_bytes_term(stream, "UTF-16", ",", true, true, true)
+    assert {:ok, ^hello} =
+             KaitaiStruct.Stream.read_bytes_term(stream, "UTF-16", ",", true, true, true)
+
     assert ^world = KaitaiStruct.Stream.read_bytes_full!(stream)
   end
 
   test "read_bytes_term/6 works with UTF-16BE encoding" do
-    stream = binary_stream(:unicode.characters_to_binary("Hello, world!", :unicode, {:utf16, :big}))
+    stream =
+      binary_stream(:unicode.characters_to_binary("Hello, world!", :unicode, {:utf16, :big}))
+
     hello = :unicode.characters_to_binary("Hello,", :unicode, {:utf16, :big})
     world = :unicode.characters_to_binary(" world!", :unicode, {:utf16, :big})
 
-    assert {:ok, ^hello} = KaitaiStruct.Stream.read_bytes_term(stream, "UTF-16BE", ",", true, true, true)
+    assert {:ok, ^hello} =
+             KaitaiStruct.Stream.read_bytes_term(stream, "UTF-16BE", ",", true, true, true)
+
     assert ^world = KaitaiStruct.Stream.read_bytes_full!(stream)
   end
 
   test "read_bytes_term/6 works with UTF-16LE encoding" do
-    stream = binary_stream(:unicode.characters_to_binary("Hello, world!", :unicode, {:utf16, :little}))
+    stream =
+      binary_stream(:unicode.characters_to_binary("Hello, world!", :unicode, {:utf16, :little}))
+
     hello = :unicode.characters_to_binary("Hello,", :unicode, {:utf16, :little})
     world = :unicode.characters_to_binary(" world!", :unicode, {:utf16, :little})
 
-    assert {:ok, ^hello} = KaitaiStruct.Stream.read_bytes_term(stream, "UTF-16LE", ",", true, true, true)
+    assert {:ok, ^hello} =
+             KaitaiStruct.Stream.read_bytes_term(stream, "UTF-16LE", ",", true, true, true)
+
     assert ^world = KaitaiStruct.Stream.read_bytes_full!(stream)
   end
 
@@ -1041,7 +1079,9 @@ defmodule KaitaiStruct.StreamReadsTest do
     hello = :unicode.characters_to_binary("Hello,", :unicode, :utf32)
     world = :unicode.characters_to_binary(" world!", :unicode, :utf32)
 
-    assert {:ok, ^hello} = KaitaiStruct.Stream.read_bytes_term(stream, "UTF-32", ",", true, true, true)
+    assert {:ok, ^hello} =
+             KaitaiStruct.Stream.read_bytes_term(stream, "UTF-32", ",", true, true, true)
+
     assert ^world = KaitaiStruct.Stream.read_bytes_full!(stream)
   end
 
@@ -1055,26 +1095,52 @@ defmodule KaitaiStruct.StreamReadsTest do
     assert " world!" = KaitaiStruct.Stream.read_bytes_full!(stream)
 
     stream = binary_stream("Hello, world!")
-    assert "Hello" = KaitaiStruct.Stream.read_bytes_term!(stream, "UTF-8", ",", false, false, true)
+
+    assert "Hello" =
+             KaitaiStruct.Stream.read_bytes_term!(stream, "UTF-8", ",", false, false, true)
+
     assert ", world!" = KaitaiStruct.Stream.read_bytes_full!(stream)
 
     stream = binary_stream("Hello, world!")
-    assert "Hello, world!" = KaitaiStruct.Stream.read_bytes_term!(stream, "UTF-8", "@", false, false, false)
+
+    assert "Hello, world!" =
+             KaitaiStruct.Stream.read_bytes_term!(stream, "UTF-8", "@", false, false, false)
 
     stream = binary_stream("Hello, world!")
+
     assert_raise KaitaiStruct.Stream.ReadError, fn ->
       KaitaiStruct.Stream.read_bytes_term!(stream, "UTF-8", "@", false, false, true)
     end
 
     stream = binary_stream("Hello, world!")
     assert "Hello" = KaitaiStruct.Stream.read_bytes_term!(stream, "UTF-8", ",", false, true, true)
+
     assert_raise KaitaiStruct.Stream.ReadError, fn ->
       KaitaiStruct.Stream.read_bytes_term!(stream, "UTF-8", ",", false, true, true)
     end
 
     stream = binary_stream("Hello, world!")
-    assert "Hello" = KaitaiStruct.Stream.read_bytes_term!(stream, "UTF-8", ",", false, false, true)
+
+    assert "Hello" =
+             KaitaiStruct.Stream.read_bytes_term!(stream, "UTF-8", ",", false, false, true)
+
     assert "" = KaitaiStruct.Stream.read_bytes_term!(stream, "UTF-8", ",", false, false, true)
+  end
+
+  test "repeat/3 with :eos option returns array, repeating until end of stream" do
+    stream = binary_stream(<<0xAA, 0xBB, 0xCC, 0xDD, 0xEE, 0xFF>>)
+
+    assert [{0xAABB, 0}, {0xCCDD, 1}, {0xEEFF, 2}] =
+             KaitaiStruct.Stream.repeat(stream, :eos, fn stream, idx ->
+               {KaitaiStruct.Stream.read_u2be!(stream), idx}
+             end)
+
+    stream = binary_stream(<<>>)
+
+    assert [] =
+             KaitaiStruct.Stream.repeat(stream, :eos, fn stream, _ ->
+               KaitaiStruct.Stream.read_u2be!(stream)
+             end)
   end
 
   defp binary_stream(bin_data) do

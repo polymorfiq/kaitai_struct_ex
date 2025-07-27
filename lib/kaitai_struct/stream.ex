@@ -297,6 +297,11 @@ defmodule KaitaiStruct.Stream do
   def ensure_fixed_contents!(pid, contents),
     do: ensure_fixed_contents(pid, contents) |> respond_or_raise!()
 
+  @spec repeat(stream :: pid(), until_cond :: :eos, read_fn :: fun()) :: [term()]
+  def repeat(pid, :eos, data_fn, idx \\ 0) do
+    if eof?(pid), do: [], else: [data_fn.(pid, idx) | repeat(pid, :eos, data_fn, idx + 1)]
+  end
+
   defp respond_or_raise!(resp) do
     case resp do
       :ok ->
