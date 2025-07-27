@@ -297,7 +297,7 @@ defmodule KaitaiStruct.Stream do
 
   @doc "Takes a list of bytes and ensures that the next bytes in the stream are an exact match"
   @spec ensure_fixed_contents(stream :: pid(), contents :: binary()) ::
-          :ok | {:error, read_error()} | {:error, {:fixed_contents_mismatch, String.t()}}
+          :ok | {:error, read_error()} | {:error, {:fixed_contents_mismatch, integer(), String.t()}}
   def ensure_fixed_contents(pid, contents) do
     GenServer.call(pid, {:ensure, {:fixed_contents, contents}})
   end
@@ -320,8 +320,8 @@ defmodule KaitaiStruct.Stream do
       {:ok, data} ->
         data
 
-      {:error, {:fixed_contents_mismatch, message}} ->
-        raise ReadError, message: "Fixed Content Mismatch: #{message}"
+      {:error, {:fixed_contents_mismatch, pos, message}} ->
+        raise ReadError, message: "Fixed Content Mismatch as byte #{pos}: #{message}"
 
       {:error, err} ->
         raise ReadError, message: "Error occurred while reading stream: #{inspect(err)}"
@@ -475,7 +475,7 @@ defmodule KaitaiStruct.Stream do
       if data == contents do
         {:reply, :ok, state}
       else
-        {:reply, {:error, {:fixed_contents_mismatch, "Expected (#{inspect(contents)}) but found (#{inspect(data)})"}}, state}
+        {:reply, {:error, {:fixed_contents_mismatch, stream_state(state, :pos_bits) / 8, "Expected (#{inspect(contents)}) but found (#{inspect(data)})"}}, state}
       end
     else
       {:error, :reached_eof} ->
