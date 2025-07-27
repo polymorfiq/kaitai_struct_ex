@@ -20,7 +20,7 @@ by adding `kaitai_struct` to your list of dependencies in `mix.exs`:
 ```elixir
 def deps do
   [
-    {:kaitai_struct, "~> 0.1.5"}
+    {:kaitai_struct, "~> 0.1.6"}
   ]
 end
 ```
