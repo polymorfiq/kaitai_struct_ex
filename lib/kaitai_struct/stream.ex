@@ -28,13 +28,17 @@ defmodule KaitaiStruct.Stream do
   def init({stream, size}), do: {:ok, stream_state(stream: stream, size_bits: size * 8)}
 
   @doc "Given a filename, attempts to generate a `KaitaiStruct.Stream` or raises an exception"
-  @spec from_file!(path :: Path.t()) :: pid()
-  def from_file!(path) do
+  @spec from_file!(path :: Path.t(), parse :: fun()) :: :ok
+  def from_file!(path, parse) do
     stat = File.stat!(path)
-    io = File.stream!(path, 1)
+    File.open!(path, [:read], fn file ->
+      io = IO.binstream(file, 1)
+      {:ok, stream} = GenServer.start_link(KaitaiStruct.Stream, {io, stat.size})
 
-    {:ok, stream} = GenServer.start_link(KaitaiStruct.Stream, {io, stat.size})
-    stream
+      parse.(stream)
+    end)
+
+    :ok
   end
 
   @doc "`true` if the stream has emitted its final byte, `false` otherwise"
