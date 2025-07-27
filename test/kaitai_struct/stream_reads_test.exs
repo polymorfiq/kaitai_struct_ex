@@ -690,41 +690,83 @@ defmodule KaitaiStruct.StreamReadsTest do
     end
   end
 
-  test "read_bits_int/2 reads bits correctly" do
-    stream = binary_stream(<<0xA0F0::integer-big-16>>)
+  test "read_bits_int_le/2 reads bits correctly" do
+    stream = binary_stream(<<0xCCDDA0F0::integer-big-32>>)
 
-    assert {:ok, 0xA0} = KaitaiStruct.Stream.read_bits_int(stream, 8)
-    assert {:ok, 15} = KaitaiStruct.Stream.read_bits_int(stream, 4)
-    assert {:ok, 0} = KaitaiStruct.Stream.read_bits_int(stream, 4)
+    assert {:ok, 0xDDCC} = KaitaiStruct.Stream.read_bits_int_le(stream, 16)
+    assert {:ok, 0xA0} = KaitaiStruct.Stream.read_bits_int_le(stream, 8)
+    assert {:ok, 15} = KaitaiStruct.Stream.read_bits_int_le(stream, 4)
+    assert {:ok, 0} = KaitaiStruct.Stream.read_bits_int_le(stream, 4)
   end
 
-  test "read_bits_int/2 responds with error on EOF" do
+  test "read_bits_int_le/2 responds with error on EOF" do
     stream = binary_stream(<<0xFFFF::integer-big-16>>)
 
-    assert {:ok, _} = KaitaiStruct.Stream.read_bits_int(stream, 2)
-    assert {:ok, _} = KaitaiStruct.Stream.read_bits_int(stream, 7)
-    assert {:ok, _} = KaitaiStruct.Stream.read_bits_int(stream, 3)
-    assert {:ok, _} = KaitaiStruct.Stream.read_bits_int(stream, 1)
-    assert {:ok, _} = KaitaiStruct.Stream.read_bits_int(stream, 3)
-    assert {:error, :reached_eof} = KaitaiStruct.Stream.read_bits_int(stream, 1)
+    assert {:ok, _} = KaitaiStruct.Stream.read_bits_int_le(stream, 2)
+    assert {:ok, _} = KaitaiStruct.Stream.read_bits_int_le(stream, 7)
+    assert {:ok, _} = KaitaiStruct.Stream.read_bits_int_le(stream, 3)
+    assert {:ok, _} = KaitaiStruct.Stream.read_bits_int_le(stream, 1)
+    assert {:ok, _} = KaitaiStruct.Stream.read_bits_int_le(stream, 3)
+    assert {:error, :reached_eof} = KaitaiStruct.Stream.read_bits_int_le(stream, 1)
 
     stream = binary_stream(<<>>)
-    assert {:error, :reached_eof} = KaitaiStruct.Stream.read_bits_int(stream, 1)
+    assert {:error, :reached_eof} = KaitaiStruct.Stream.read_bits_int_le(stream, 1)
   end
 
-  test "read_bits_int!/2 reads bits correctly" do
-    stream = binary_stream(<<0xA0F0::integer-big-16>>)
+  test "read_bits_int_le!/2 reads bits correctly" do
+    stream = binary_stream(<<0xDDEEA0F0::integer-big-32>>)
 
-    assert 0xA0 = KaitaiStruct.Stream.read_bits_int!(stream, 8)
-    assert 15 = KaitaiStruct.Stream.read_bits_int!(stream, 4)
-    assert 0 = KaitaiStruct.Stream.read_bits_int!(stream, 4)
+    assert 0xEEDD = KaitaiStruct.Stream.read_bits_int_le!(stream, 16)
+    assert 0xA0 = KaitaiStruct.Stream.read_bits_int_le!(stream, 8)
+    assert 15 = KaitaiStruct.Stream.read_bits_int_le!(stream, 4)
+    assert 0 = KaitaiStruct.Stream.read_bits_int_le!(stream, 4)
   end
 
-  test "read_bits_int!/2 raises ReadError on EOF" do
+  test "read_bits_int_le!/2 raises ReadError on EOF" do
     stream = binary_stream(<<0xA0F0::integer-big-8>>)
 
     assert_raise KaitaiStruct.Stream.ReadError, fn ->
-      KaitaiStruct.Stream.read_bits_int!(stream, 9)
+      KaitaiStruct.Stream.read_bits_int_le!(stream, 9)
+    end
+  end
+
+  test "read_bits_int_be/2 reads bits correctly" do
+    stream = binary_stream(<<0xCCDDA0F0::integer-big-32>>)
+
+    assert {:ok, 0xCCDD} = KaitaiStruct.Stream.read_bits_int_be(stream, 16)
+    assert {:ok, 0xA0} = KaitaiStruct.Stream.read_bits_int_be(stream, 8)
+    assert {:ok, 15} = KaitaiStruct.Stream.read_bits_int_be(stream, 4)
+    assert {:ok, 0} = KaitaiStruct.Stream.read_bits_int_be(stream, 4)
+  end
+
+  test "read_bits_int_be/2 responds with error on EOF" do
+    stream = binary_stream(<<0xFFFF::integer-big-16>>)
+
+    assert {:ok, _} = KaitaiStruct.Stream.read_bits_int_be(stream, 2)
+    assert {:ok, _} = KaitaiStruct.Stream.read_bits_int_be(stream, 7)
+    assert {:ok, _} = KaitaiStruct.Stream.read_bits_int_be(stream, 3)
+    assert {:ok, _} = KaitaiStruct.Stream.read_bits_int_be(stream, 1)
+    assert {:ok, _} = KaitaiStruct.Stream.read_bits_int_be(stream, 3)
+    assert {:error, :reached_eof} = KaitaiStruct.Stream.read_bits_int_be(stream, 1)
+
+    stream = binary_stream(<<>>)
+    assert {:error, :reached_eof} = KaitaiStruct.Stream.read_bits_int_be(stream, 1)
+  end
+
+  test "read_bits_int_be!/2 reads bits correctly" do
+    stream = binary_stream(<<0xDDEEA0F0::integer-big-32>>)
+
+    assert 0xDDEE = KaitaiStruct.Stream.read_bits_int_be!(stream, 16)
+    assert 0xA0 = KaitaiStruct.Stream.read_bits_int_be!(stream, 8)
+    assert 15 = KaitaiStruct.Stream.read_bits_int_be!(stream, 4)
+    assert 0 = KaitaiStruct.Stream.read_bits_int_be!(stream, 4)
+  end
+
+  test "read_bits_int_be!/2 raises ReadError on EOF" do
+    stream = binary_stream(<<0xA0F0::integer-big-8>>)
+
+    assert_raise KaitaiStruct.Stream.ReadError, fn ->
+      KaitaiStruct.Stream.read_bits_int_be!(stream, 9)
     end
   end
 
@@ -745,7 +787,7 @@ defmodule KaitaiStruct.StreamReadsTest do
     assert {:ok, _} = KaitaiStruct.Stream.read_bits_array(stream, 3)
     assert {:ok, _} = KaitaiStruct.Stream.read_bits_array(stream, 1)
     assert {:ok, _} = KaitaiStruct.Stream.read_bits_array(stream, 3)
-    assert {:error, :reached_eof} = KaitaiStruct.Stream.read_bits_int(stream, 1)
+    assert {:error, :reached_eof} = KaitaiStruct.Stream.read_bits_int_be(stream, 1)
 
     stream = binary_stream(<<>>)
     assert {:error, :reached_eof} = KaitaiStruct.Stream.read_bits_array(stream, 1)
@@ -773,14 +815,14 @@ defmodule KaitaiStruct.StreamReadsTest do
 
     assert [true, false, true, false] = KaitaiStruct.Stream.read_bits_array!(stream, 4)
     KaitaiStruct.Stream.align_to_byte(stream)
-    assert 0b111 = KaitaiStruct.Stream.read_bits_int!(stream, 3)
+    assert 0b111 = KaitaiStruct.Stream.read_bits_int_be!(stream, 3)
     KaitaiStruct.Stream.align_to_byte(stream)
     assert <<0xFF>> = KaitaiStruct.Stream.read_bytes_array!(stream, 1)
-    assert 0xDE = KaitaiStruct.Stream.read_bits_int!(stream, 8)
+    assert 0xDE = KaitaiStruct.Stream.read_bits_int_be!(stream, 8)
     KaitaiStruct.Stream.align_to_byte(stream)
-    assert 0b000 = KaitaiStruct.Stream.read_bits_int!(stream, 3)
-    assert 0b1 = KaitaiStruct.Stream.read_bits_int!(stream, 1)
-    assert 0b1 = KaitaiStruct.Stream.read_bits_int!(stream, 1)
+    assert 0b000 = KaitaiStruct.Stream.read_bits_int_be!(stream, 3)
+    assert 0b1 = KaitaiStruct.Stream.read_bits_int_be!(stream, 1)
+    assert 0b1 = KaitaiStruct.Stream.read_bits_int_be!(stream, 1)
     KaitaiStruct.Stream.align_to_byte(stream)
     assert <<0xAD>> = KaitaiStruct.Stream.read_bytes_array!(stream, 1)
   end
@@ -826,16 +868,16 @@ defmodule KaitaiStruct.StreamReadsTest do
 
   test "read_bytes_array/2 works as expected when unaligned from bytes" do
     stream = binary_stream(<<0xA0F0BBEE0C::integer-big-40>>)
-    assert 0b1010 = KaitaiStruct.Stream.read_bits_int!(stream, 4)
+    assert 0b1010 = KaitaiStruct.Stream.read_bits_int_be!(stream, 4)
     assert {:ok, <<0x0F, 0x0B, 0xBE>>} = KaitaiStruct.Stream.read_bytes_array(stream, 3)
     assert {:ok, <<0xE0>>} = KaitaiStruct.Stream.read_bytes_array(stream, 1)
     assert {:error, :reached_eof} = KaitaiStruct.Stream.read_bytes_array(stream, 1)
-    assert 0b1100 = KaitaiStruct.Stream.read_bits_int!(stream, 4)
+    assert 0b1100 = KaitaiStruct.Stream.read_bits_int_be!(stream, 4)
 
     stream = binary_stream(<<0xB0FC::integer-big-16>>)
-    assert 0b101 = KaitaiStruct.Stream.read_bits_int!(stream, 3)
+    assert 0b101 = KaitaiStruct.Stream.read_bits_int_be!(stream, 3)
     assert {:ok, <<0b10000111>>} = KaitaiStruct.Stream.read_bytes_array(stream, 1)
-    assert 0b11100 = KaitaiStruct.Stream.read_bits_int!(stream, 5)
+    assert 0b11100 = KaitaiStruct.Stream.read_bits_int_be!(stream, 5)
   end
 
   test "read_bytes_array!/2 reads bytes correctly" do
@@ -847,18 +889,18 @@ defmodule KaitaiStruct.StreamReadsTest do
 
   test "read_bytes_array!/2 works as expected when unaligned from bytes" do
     stream = binary_stream(<<0xA0F0BBEE0C::integer-big-40>>)
-    assert 0b1010 = KaitaiStruct.Stream.read_bits_int!(stream, 4)
+    assert 0b1010 = KaitaiStruct.Stream.read_bits_int_be!(stream, 4)
     assert <<0x0F, 0x0B, 0xBE>> = KaitaiStruct.Stream.read_bytes_array!(stream, 3)
     assert <<0xE0>> = KaitaiStruct.Stream.read_bytes_array!(stream, 1)
     assert_raise(KaitaiStruct.Stream.ReadError, fn ->
       KaitaiStruct.Stream.read_bytes_array!(stream, 1)
     end)
-    assert 0b1100 = KaitaiStruct.Stream.read_bits_int!(stream, 4)
+    assert 0b1100 = KaitaiStruct.Stream.read_bits_int_be!(stream, 4)
 
     stream = binary_stream(<<0xB0FC::integer-big-16>>)
-    assert 0b101 = KaitaiStruct.Stream.read_bits_int!(stream, 3)
+    assert 0b101 = KaitaiStruct.Stream.read_bits_int_be!(stream, 3)
     assert <<0b10000111>> = KaitaiStruct.Stream.read_bytes_array!(stream, 1)
-    assert 0b11100 = KaitaiStruct.Stream.read_bits_int!(stream, 5)
+    assert 0b11100 = KaitaiStruct.Stream.read_bits_int_be!(stream, 5)
   end
 
   test "read_bytes_array!/2 responds with error on EOF" do
@@ -884,9 +926,9 @@ defmodule KaitaiStruct.StreamReadsTest do
   test "read_bytes_full/1 returns all fully-readable bytes when not byte-aligned" do
     stream = binary_stream(<<0xA0F0BBEE0CDEFF::integer-big-56>>)
 
-    assert 0xA = KaitaiStruct.Stream.read_bits_int!(stream, 4)
+    assert 0xA = KaitaiStruct.Stream.read_bits_int_be!(stream, 4)
     assert {:ok, <<0x0F, 0x0B, 0xBE, 0xE0, 0xCD, 0xEF>>} = KaitaiStruct.Stream.read_bytes_full(stream)
-    assert 0xF = KaitaiStruct.Stream.read_bits_int!(stream, 4)
+    assert 0xF = KaitaiStruct.Stream.read_bits_int_be!(stream, 4)
   end
 
   test "read_bytes_full/1 reads empty binary on EOF" do
@@ -911,9 +953,9 @@ defmodule KaitaiStruct.StreamReadsTest do
   test "read_bytes_full!/1 returns all fully-readable bytes when not byte-aligned" do
     stream = binary_stream(<<0xA0F0BBEE0CDEFF::integer-big-56>>)
 
-    assert 0xA = KaitaiStruct.Stream.read_bits_int!(stream, 4)
+    assert 0xA = KaitaiStruct.Stream.read_bits_int_be!(stream, 4)
     assert <<0x0F, 0x0B, 0xBE, 0xE0, 0xCD, 0xEF>> = KaitaiStruct.Stream.read_bytes_full!(stream)
-    assert 0xF = KaitaiStruct.Stream.read_bits_int!(stream, 4)
+    assert 0xF = KaitaiStruct.Stream.read_bits_int_be!(stream, 4)
   end
 
   test "read_bytes_full!/1 reads empty binary at EOF" do

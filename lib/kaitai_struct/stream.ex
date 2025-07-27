@@ -192,14 +192,23 @@ defmodule KaitaiStruct.Stream do
   @spec align_to_byte(stream :: pid()) :: :ok
   def align_to_byte(pid), do: GenServer.cast(pid, :align_to_byte)
 
-  @doc "Read an integer (composed of N bits) from stream."
-  @spec read_bits_int(stream :: pid(), n :: non_neg_integer()) ::
+  @doc "Read an integer (little-endian, composed of N bits) from stream."
+  @spec read_bits_int_le(stream :: pid(), n :: non_neg_integer()) ::
           {:ok, integer()} | {:error, read_error()}
-  def read_bits_int(pid, n), do: GenServer.call(pid, {:read, :bit_int, n})
+  def read_bits_int_le(pid, n), do: GenServer.call(pid, {:read, {:bit_int, :little}, n})
 
-  @doc "Read an integer (composed of N bits) from stream. Raises `KaitaiStruct.Stream.ReadError` on failure"
-  @spec read_bits_int!(stream :: pid(), n :: non_neg_integer()) :: integer()
-  def read_bits_int!(pid, n), do: read_bits_int(pid, n) |> respond_or_raise!()
+  @doc "Read an integer (little-endian, composed of N bits) from stream. Raises `KaitaiStruct.Stream.ReadError` on failure"
+  @spec read_bits_int_le!(stream :: pid(), n :: non_neg_integer()) :: integer()
+  def read_bits_int_le!(pid, n), do: read_bits_int_le(pid, n) |> respond_or_raise!()
+
+  @doc "Read an integer (big-endian, composed of N bits) from stream."
+  @spec read_bits_int_be(stream :: pid(), n :: non_neg_integer()) ::
+          {:ok, integer()} | {:error, read_error()}
+  def read_bits_int_be(pid, n), do: GenServer.call(pid, {:read, {:bit_int, :big}, n})
+
+  @doc "Read an integer (big-endian, composed of N bits) from stream. Raises `KaitaiStruct.Stream.ReadError` on failure"
+  @spec read_bits_int_be!(stream :: pid(), n :: non_neg_integer()) :: integer()
+  def read_bits_int_be!(pid, n), do: read_bits_int_be(pid, n) |> respond_or_raise!()
 
   @doc "Read an array of `n` bits from stream."
   @spec read_bits_array(stream :: pid(), n :: non_neg_integer()) ::
@@ -355,11 +364,23 @@ defmodule KaitaiStruct.Stream do
   end
 
   @impl true
-  def handle_call({:read, :bit_int, n}, _from, state) do
+  def handle_call({:read, {:bit_int, :little}, n}, _from, state) do
     num_bytes_needed = ceil(n / 8)
 
     with {:ok, {data, state}} <- stream_bitstring(state, num_bytes_needed, read_bits: n) do
-      <<num::integer-size(n)>> = data
+      <<num::integer-little-size(n)>> = data
+      {:reply, {:ok, num}, state}
+    else
+      {:error, err} -> {:reply, {:error, err}, state}
+    end
+  end
+
+  @impl true
+  def handle_call({:read, {:bit_int, :big}, n}, _from, state) do
+    num_bytes_needed = ceil(n / 8)
+
+    with {:ok, {data, state}} <- stream_bitstring(state, num_bytes_needed, read_bits: n) do
+      <<num::integer-big-size(n)>> = data
       {:reply, {:ok, num}, state}
     else
       {:error, err} -> {:reply, {:error, err}, state}
