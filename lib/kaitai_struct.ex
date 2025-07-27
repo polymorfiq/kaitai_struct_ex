@@ -65,6 +65,13 @@ defmodule KaitaiStruct do
     end
   end
 
+  @doc "Takes a binary and specifies its' encoding. Raises exception in the case of failure"
+  @spec bytes_to_str!(bytes :: binary(), encoding :: String.t()) :: String.t()
+  def bytes_to_str!(bytes, encoding) do
+    {:ok, str} = bytes_to_str(bytes, encoding)
+    str
+  end
+
   @doc "Runs modulo on inputs"
   @spec mod(a :: integer(), b :: integer()) :: integer()
   def mod(a, b), do: rem(a, b)
