@@ -14,6 +14,7 @@ defmodule KaitaiStruct.Stream do
 
   Record.defrecordp(:stream_state, stream: nil, size_bits: nil, pos_bits: 0, buffer: <<>>)
 
+  @type t :: pid()
   @type stream_state ::
           record(:stream_state,
             stream: Enumerable.t(),
