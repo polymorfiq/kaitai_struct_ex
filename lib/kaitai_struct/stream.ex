@@ -42,213 +42,213 @@ defmodule KaitaiStruct.Stream do
   end
 
   @doc "`true` if the stream has emitted its final byte, `false` otherwise"
-  @spec eof?(stream :: pid()) :: boolean()
-  def eof?(pid), do: GenServer.call(pid, :eof?)
+  @spec eof?(stream :: pid(), opts :: keyword()) :: boolean()
+  def eof?(pid, opts \\ []), do: GenServer.call(pid, :eof?, opts[:timeout] || :infinity)
 
   @doc "Moves the stream position forward by `n` bytes, or to the end of the stream. Whichever is smaller."
-  @spec seek(stream :: pid(), n :: non_neg_integer()) ::
+  @spec seek(stream :: pid(), n :: non_neg_integer(), opts :: keyword()) ::
           :ok | {:error, :reached_eof} | {:error, :cannot_seek_backwards}
-  def seek(pid, n), do: GenServer.call(pid, {:seek, n})
+  def seek(pid, n, opts \\ []), do: GenServer.call(pid, {:seek, n}, opts[:timeout] || :infinity)
 
   @doc "Current position (bytes read) within the stream"
-  @spec pos(stream :: pid()) :: non_neg_integer()
-  def pos(pid), do: GenServer.call(pid, :pos)
+  @spec pos(stream :: pid(), opts :: keyword()) :: non_neg_integer()
+  def pos(pid, opts \\ []), do: GenServer.call(pid, :pos, opts[:timeout] || :infinity)
 
   @doc "Total size of the stream, in bytes"
-  @spec size(stream :: pid()) :: non_neg_integer()
-  def size(pid), do: GenServer.call(pid, :size)
+  @spec size(stream :: pid(), opts :: keyword()) :: non_neg_integer()
+  def size(pid, opts \\ []), do: GenServer.call(pid, :size, opts[:timeout] || :infinity)
 
   @doc "Read signed integer (1 byte) from stream."
-  @spec read_s1(stream :: pid()) :: {:ok, integer()} | {:error, read_error()}
-  def read_s1(pid), do: GenServer.call(pid, {:read, :signed_integer, 1})
+  @spec read_s1(stream :: pid(), opts :: keyword()) :: {:ok, integer()} | {:error, read_error()}
+  def read_s1(pid, opts \\ []), do: GenServer.call(pid, {:read, :signed_integer, 1}, opts[:timeout] || :infinity)
 
   @doc "Read signed integer (1 byte) from stream. Raises `KaitaiStruct.Stream.ReadError` on failure"
-  @spec read_s1!(stream :: pid()) :: integer()
-  def read_s1!(pid), do: read_s1(pid) |> respond_or_raise!()
+  @spec read_s1!(stream :: pid(), opts :: keyword()) :: integer()
+  def read_s1!(pid, opts \\ []), do: read_s1(pid, opts) |> respond_or_raise!()
 
   @doc "Read signed integer (2 bytes, big-endian) from stream."
-  @spec read_s2be(stream :: pid()) :: {:ok, integer()} | {:error, read_error()}
-  def read_s2be(pid), do: GenServer.call(pid, {:read, :signed_integer_be, 2})
+  @spec read_s2be(stream :: pid(), opts :: keyword()) :: {:ok, integer()} | {:error, read_error()}
+  def read_s2be(pid, opts \\ []), do: GenServer.call(pid, {:read, :signed_integer_be, 2}, opts[:timeout] || :infinity)
 
   @doc "Read signed integer (2 bytes, big-endian) from stream. Raises `KaitaiStruct.Stream.ReadError` on failure"
-  @spec read_s2be!(stream :: pid()) :: integer()
-  def read_s2be!(pid), do: read_s2be(pid) |> respond_or_raise!()
+  @spec read_s2be!(stream :: pid(), opts :: keyword()) :: integer()
+  def read_s2be!(pid, opts \\ []), do: read_s2be(pid, opts) |> respond_or_raise!()
 
   @doc "Read signed integer (4 bytes, big-endian) from stream."
-  @spec read_s4be(stream :: pid()) :: {:ok, integer()} | {:error, read_error()}
-  def read_s4be(pid), do: GenServer.call(pid, {:read, :signed_integer_be, 4})
+  @spec read_s4be(stream :: pid(), opts :: keyword()) :: {:ok, integer()} | {:error, read_error()}
+  def read_s4be(pid, opts \\ []), do: GenServer.call(pid, {:read, :signed_integer_be, 4}, opts[:timeout] || :infinity)
 
   @doc "Read signed integer (4 bytes, big-endian) from stream. Raises `KaitaiStruct.Stream.ReadError` on failure"
-  @spec read_s4be!(stream :: pid()) :: integer()
-  def read_s4be!(pid), do: read_s4be(pid) |> respond_or_raise!()
+  @spec read_s4be!(stream :: pid(), opts :: keyword()) :: integer()
+  def read_s4be!(pid, opts \\ []), do: read_s4be(pid, opts) |> respond_or_raise!()
 
   @doc "Read signed integer (8 bytes, big-endian) from stream."
-  @spec read_s8be(stream :: pid()) :: {:ok, integer()} | {:error, read_error()}
-  def read_s8be(pid), do: GenServer.call(pid, {:read, :signed_integer_be, 8})
+  @spec read_s8be(stream :: pid(), opts :: keyword()) :: {:ok, integer()} | {:error, read_error()}
+  def read_s8be(pid, opts \\ []), do: GenServer.call(pid, {:read, :signed_integer_be, 8}, opts[:timeout] || :infinity)
 
   @doc "Read signed integer (8 bytes, big-endian) from stream. Raises `KaitaiStruct.Stream.ReadError` on failure"
-  @spec read_s8be!(stream :: pid()) :: integer()
-  def read_s8be!(pid), do: read_s8be(pid) |> respond_or_raise!()
+  @spec read_s8be!(stream :: pid(), opts :: keyword()) :: integer()
+  def read_s8be!(pid, opts \\ []), do: read_s8be(pid, opts) |> respond_or_raise!()
 
   @doc "Read signed integer (2 bytes, little-endian) from stream."
-  @spec read_s2le(stream :: pid()) :: {:ok, integer()} | {:error, read_error()}
-  def read_s2le(pid), do: GenServer.call(pid, {:read, :signed_integer_le, 2})
+  @spec read_s2le(stream :: pid(), opts :: keyword()) :: {:ok, integer()} | {:error, read_error()}
+  def read_s2le(pid, opts \\ []), do: GenServer.call(pid, {:read, :signed_integer_le, 2}, opts[:timeout] || :infinity)
 
   @doc "Read signed integer (2 bytes, little-endian) from stream. Raises `KaitaiStruct.Stream.ReadError` on failure"
-  @spec read_s2le!(stream :: pid()) :: integer()
-  def read_s2le!(pid), do: read_s2le(pid) |> respond_or_raise!()
+  @spec read_s2le!(stream :: pid(), opts :: keyword()) :: integer()
+  def read_s2le!(pid, opts \\ []), do: read_s2le(pid, opts) |> respond_or_raise!()
 
   @doc "Read signed integer (4 bytes, little-endian) from stream."
-  @spec read_s4le(stream :: pid()) :: {:ok, integer()} | {:error, read_error()}
-  def read_s4le(pid), do: GenServer.call(pid, {:read, :signed_integer_le, 4})
+  @spec read_s4le(stream :: pid(), opts :: keyword()) :: {:ok, integer()} | {:error, read_error()}
+  def read_s4le(pid, opts \\ []), do: GenServer.call(pid, {:read, :signed_integer_le, 4}, opts[:timeout] || :infinity)
 
   @doc "Read signed integer (4 bytes, little-endian) from stream. Raises `KaitaiStruct.Stream.ReadError` on failure"
-  @spec read_s4le!(stream :: pid()) :: integer()
-  def read_s4le!(pid), do: read_s4le(pid) |> respond_or_raise!()
+  @spec read_s4le!(stream :: pid(), opts :: keyword()) :: integer()
+  def read_s4le!(pid, opts \\ []), do: read_s4le(pid, opts) |> respond_or_raise!()
 
   @doc "Read signed integer (8 bytes, little-endian) from stream."
-  @spec read_s8le(stream :: pid()) :: {:ok, integer()} | {:error, read_error()}
-  def read_s8le(pid), do: GenServer.call(pid, {:read, :signed_integer_le, 8})
+  @spec read_s8le(stream :: pid(), opts :: keyword()) :: {:ok, integer()} | {:error, read_error()}
+  def read_s8le(pid, opts \\ []), do: GenServer.call(pid, {:read, :signed_integer_le, 8}, opts[:timeout] || :infinity)
 
   @doc "Read signed integer (8 bytes, little-endian) from stream. Raises `KaitaiStruct.Stream.ReadError` on failure"
-  @spec read_s8le!(stream :: pid()) :: integer()
-  def read_s8le!(pid), do: read_s8le(pid) |> respond_or_raise!()
+  @spec read_s8le!(stream :: pid(), opts :: keyword()) :: integer()
+  def read_s8le!(pid, opts \\ []), do: read_s8le(pid, opts) |> respond_or_raise!()
 
   @doc "Read unsigned integer (1 byte) from stream."
-  @spec read_u1(stream :: pid()) :: {:ok, non_neg_integer()} | {:error, read_error()}
-  def read_u1(pid), do: GenServer.call(pid, {:read, :unsigned_integer, 1})
+  @spec read_u1(stream :: pid(), opts :: keyword()) :: {:ok, non_neg_integer()} | {:error, read_error()}
+  def read_u1(pid, opts \\ []), do: GenServer.call(pid, {:read, :unsigned_integer, 1}, opts[:timeout] || :infinity)
 
   @doc "Read unsigned integer (1 byte) from stream. Raises `KaitaiStruct.Stream.ReadError` on failure"
-  @spec read_u1!(stream :: pid()) :: non_neg_integer()
-  def read_u1!(pid), do: read_u1(pid) |> respond_or_raise!()
+  @spec read_u1!(stream :: pid(), opts :: keyword()) :: non_neg_integer()
+  def read_u1!(pid, opts \\ []), do: read_u1(pid, opts) |> respond_or_raise!()
 
   @doc "Read unsigned integer (2 bytes, big-endian) from stream."
-  @spec read_u2be(stream :: pid()) :: {:ok, non_neg_integer()} | {:error, read_error()}
-  def read_u2be(pid), do: GenServer.call(pid, {:read, :unsigned_integer_be, 2})
+  @spec read_u2be(stream :: pid(), opts :: keyword()) :: {:ok, non_neg_integer()} | {:error, read_error()}
+  def read_u2be(pid, opts \\ []), do: GenServer.call(pid, {:read, :unsigned_integer_be, 2}, opts[:timeout] || :infinity)
 
   @doc "Read unsigned integer (2 bytes, big-endian) from stream. Raises `KaitaiStruct.Stream.ReadError` on failure"
-  @spec read_u2be!(stream :: pid()) :: non_neg_integer()
-  def read_u2be!(pid), do: read_u2be(pid) |> respond_or_raise!()
+  @spec read_u2be!(stream :: pid(), opts :: keyword()) :: non_neg_integer()
+  def read_u2be!(pid, opts \\ []), do: read_u2be(pid, opts) |> respond_or_raise!()
 
   @doc "Read unsigned integer (4 bytes, big-endian) from stream."
-  @spec read_u4be(stream :: pid()) :: {:ok, non_neg_integer()} | {:error, read_error()}
-  def read_u4be(pid), do: GenServer.call(pid, {:read, :unsigned_integer_be, 4})
+  @spec read_u4be(stream :: pid(), opts :: keyword()) :: {:ok, non_neg_integer()} | {:error, read_error()}
+  def read_u4be(pid, opts \\ []), do: GenServer.call(pid, {:read, :unsigned_integer_be, 4}, opts[:timeout] || :infinity)
 
   @doc "Read unsigned integer (4 bytes, big-endian) from stream. Raises `KaitaiStruct.Stream.ReadError` on failure"
-  @spec read_u4be!(stream :: pid()) :: non_neg_integer()
-  def read_u4be!(pid), do: read_u4be(pid) |> respond_or_raise!()
+  @spec read_u4be!(stream :: pid(), opts :: keyword()) :: non_neg_integer()
+  def read_u4be!(pid, opts \\ []), do: read_u4be(pid, opts) |> respond_or_raise!()
 
   @doc "Read unsigned integer (8 bytes, big-endian) from stream."
-  @spec read_u8be(stream :: pid()) :: {:ok, non_neg_integer()} | {:error, read_error()}
-  def read_u8be(pid), do: GenServer.call(pid, {:read, :unsigned_integer_be, 8})
+  @spec read_u8be(stream :: pid(), opts :: keyword()) :: {:ok, non_neg_integer()} | {:error, read_error()}
+  def read_u8be(pid, opts \\ []), do: GenServer.call(pid, {:read, :unsigned_integer_be, 8}, opts[:timeout] || :infinity)
 
   @doc "Read unsigned integer (8 bytes, big-endian) from stream. Raises `KaitaiStruct.Stream.ReadError` on failure"
-  @spec read_u8be!(stream :: pid()) :: non_neg_integer()
-  def read_u8be!(pid), do: read_u8be(pid) |> respond_or_raise!()
+  @spec read_u8be!(stream :: pid(), opts :: keyword()) :: non_neg_integer()
+  def read_u8be!(pid, opts \\ []), do: read_u8be(pid, opts) |> respond_or_raise!()
 
   @doc "Read unsigned integer (2 bytes, little-endian) from stream."
-  @spec read_u2le(stream :: pid()) :: {:ok, non_neg_integer()} | {:error, read_error()}
-  def read_u2le(pid), do: GenServer.call(pid, {:read, :unsigned_integer_le, 2})
+  @spec read_u2le(stream :: pid(), opts :: keyword()) :: {:ok, non_neg_integer()} | {:error, read_error()}
+  def read_u2le(pid, opts \\ []), do: GenServer.call(pid, {:read, :unsigned_integer_le, 2}, opts[:timeout] || :infinity)
 
   @doc "Read unsigned integer (2 bytes, little-endian) from stream. Raises `KaitaiStruct.Stream.ReadError` on failure"
-  @spec read_u2le!(stream :: pid()) :: non_neg_integer()
-  def read_u2le!(pid), do: read_u2le(pid) |> respond_or_raise!()
+  @spec read_u2le!(stream :: pid(), opts :: keyword()) :: non_neg_integer()
+  def read_u2le!(pid, opts \\ []), do: read_u2le(pid, opts) |> respond_or_raise!()
 
   @doc "Read unsigned integer (4 bytes, little-endian) from stream."
-  @spec read_u4le(stream :: pid()) :: {:ok, non_neg_integer()} | {:error, read_error()}
-  def read_u4le(pid), do: GenServer.call(pid, {:read, :unsigned_integer_le, 4})
+  @spec read_u4le(stream :: pid(), opts :: keyword()) :: {:ok, non_neg_integer()} | {:error, read_error()}
+  def read_u4le(pid, opts \\ []), do: GenServer.call(pid, {:read, :unsigned_integer_le, 4}, opts[:timeout] || :infinity)
 
   @doc "Read unsigned integer (4 bytes, little-endian) from stream. Raises `KaitaiStruct.Stream.ReadError` on failure"
-  @spec read_u4le!(stream :: pid()) :: non_neg_integer()
-  def read_u4le!(pid), do: read_u4le(pid) |> respond_or_raise!()
+  @spec read_u4le!(stream :: pid(), opts :: keyword()) :: non_neg_integer()
+  def read_u4le!(pid, opts \\ []), do: read_u4le(pid, opts) |> respond_or_raise!()
 
   @doc "Read unsigned integer (8 bytes, little-endian) from stream."
-  @spec read_u8le(stream :: pid()) :: {:ok, non_neg_integer()} | {:error, read_error()}
-  def read_u8le(pid), do: GenServer.call(pid, {:read, :unsigned_integer_le, 8})
+  @spec read_u8le(stream :: pid(), opts :: keyword()) :: {:ok, non_neg_integer()} | {:error, read_error()}
+  def read_u8le(pid, opts \\ []), do: GenServer.call(pid, {:read, :unsigned_integer_le, 8}, opts[:timeout] || :infinity)
 
   @doc "Read unsigned integer (8 bytes, little-endian) from stream. Raises `KaitaiStruct.Stream.ReadError` on failure"
-  @spec read_u8le!(stream :: pid()) :: non_neg_integer()
-  def read_u8le!(pid), do: read_u8le(pid) |> respond_or_raise!()
+  @spec read_u8le!(stream :: pid(), opts :: keyword()) :: non_neg_integer()
+  def read_u8le!(pid, opts \\ []), do: read_u8le(pid, opts) |> respond_or_raise!()
 
   @doc "Read float (4 bytes, big-endian) from stream."
-  @spec read_f4be(stream :: pid()) :: {:ok, float()} | {:error, read_error()}
-  def read_f4be(pid), do: GenServer.call(pid, {:read, :float_be, 4})
+  @spec read_f4be(stream :: pid(), opts :: keyword()) :: {:ok, float()} | {:error, read_error()}
+  def read_f4be(pid, opts \\ []), do: GenServer.call(pid, {:read, :float_be, 4}, opts[:timeout] || :infinity)
 
   @doc "Read float (4 bytes, big-endian) from stream. Raises `KaitaiStruct.Stream.ReadError` on failure"
-  @spec read_f4be!(stream :: pid()) :: float()
-  def read_f4be!(pid), do: read_f4be(pid) |> respond_or_raise!()
+  @spec read_f4be!(stream :: pid(), opts :: keyword()) :: float()
+  def read_f4be!(pid, opts \\ []), do: read_f4be(pid, opts) |> respond_or_raise!()
 
   @doc "Read float (8 bytes, big-endian) from stream."
-  @spec read_f8be(stream :: pid()) :: {:ok, float()} | {:error, read_error()}
-  def read_f8be(pid), do: GenServer.call(pid, {:read, :float_be, 8})
+  @spec read_f8be(stream :: pid(), opts :: keyword()) :: {:ok, float()} | {:error, read_error()}
+  def read_f8be(pid, opts \\ []), do: GenServer.call(pid, {:read, :float_be, 8}, opts[:timeout] || :infinity)
 
   @doc "Read float (8 bytes, big-endian) from stream. Raises `KaitaiStruct.Stream.ReadError` on failure"
-  @spec read_f8be!(stream :: pid()) :: float()
-  def read_f8be!(pid), do: read_f8be(pid) |> respond_or_raise!()
+  @spec read_f8be!(stream :: pid(), opts :: keyword()) :: float()
+  def read_f8be!(pid, opts \\ []), do: read_f8be(pid, opts) |> respond_or_raise!()
 
   @doc "Read float (4 bytes, little-endian) from stream."
-  @spec read_f4le(stream :: pid()) :: {:ok, float()} | {:error, read_error()}
-  def read_f4le(pid), do: GenServer.call(pid, {:read, :float_le, 4})
+  @spec read_f4le(stream :: pid(), opts :: keyword()) :: {:ok, float()} | {:error, read_error()}
+  def read_f4le(pid, opts \\ []), do: GenServer.call(pid, {:read, :float_le, 4}, opts[:timeout] || :infinity)
 
   @doc "Read float (4 bytes, little-endian) from stream. Raises `KaitaiStruct.Stream.ReadError` on failure"
-  @spec read_f4le!(stream :: pid()) :: float()
-  def read_f4le!(pid), do: read_f4le(pid) |> respond_or_raise!()
+  @spec read_f4le!(stream :: pid(), opts :: keyword()) :: float()
+  def read_f4le!(pid, opts \\ []), do: read_f4le(pid, opts) |> respond_or_raise!()
 
   @doc "Read float (8 bytes, little-endian) from stream."
-  @spec read_f8le(stream :: pid()) :: {:ok, float()} | {:error, read_error()}
-  def read_f8le(pid), do: GenServer.call(pid, {:read, :float_le, 8})
+  @spec read_f8le(stream :: pid(), opts :: keyword()) :: {:ok, float()} | {:error, read_error()}
+  def read_f8le(pid, opts \\ []), do: GenServer.call(pid, {:read, :float_le, 8}, opts[:timeout] || :infinity)
 
   @doc "Read float (8 bytes, little-endian) from stream."
-  @spec read_f8le!(stream :: pid()) :: float()
-  def read_f8le!(pid), do: read_f8le(pid) |> respond_or_raise!()
+  @spec read_f8le!(stream :: pid(), opts :: keyword()) :: float()
+  def read_f8le!(pid, opts \\ []), do: read_f8le(pid, opts) |> respond_or_raise!()
 
   @doc "Re-align to bytes after moving to an non-standard bit alignment"
   @spec align_to_byte(stream :: pid()) :: :ok
   def align_to_byte(pid), do: GenServer.cast(pid, :align_to_byte)
 
   @doc "Read an integer (little-endian, composed of N bits) from stream."
-  @spec read_bits_int_le(stream :: pid(), n :: non_neg_integer()) ::
+  @spec read_bits_int_le(stream :: pid(), n :: non_neg_integer(), opts :: keyword()) ::
           {:ok, integer()} | {:error, read_error()}
-  def read_bits_int_le(pid, n), do: GenServer.call(pid, {:read, {:bit_int, :little}, n})
+  def read_bits_int_le(pid, n, opts \\ []), do: GenServer.call(pid, {:read, {:bit_int, :little}, n}, opts[:timeout] || :infinity)
 
   @doc "Read an integer (little-endian, composed of N bits) from stream. Raises `KaitaiStruct.Stream.ReadError` on failure"
-  @spec read_bits_int_le!(stream :: pid(), n :: non_neg_integer()) :: integer()
-  def read_bits_int_le!(pid, n), do: read_bits_int_le(pid, n) |> respond_or_raise!()
+  @spec read_bits_int_le!(stream :: pid(), n :: non_neg_integer(), opts :: keyword()) :: integer()
+  def read_bits_int_le!(pid, n, opts \\ []), do: read_bits_int_le(pid, n, opts) |> respond_or_raise!()
 
   @doc "Read an integer (big-endian, composed of N bits) from stream."
-  @spec read_bits_int_be(stream :: pid(), n :: non_neg_integer()) ::
+  @spec read_bits_int_be(stream :: pid(), n :: non_neg_integer(), opts :: keyword()) ::
           {:ok, integer()} | {:error, read_error()}
-  def read_bits_int_be(pid, n), do: GenServer.call(pid, {:read, {:bit_int, :big}, n})
+  def read_bits_int_be(pid, n, opts \\ []), do: GenServer.call(pid, {:read, {:bit_int, :big}, n}, opts[:timeout] || :infinity)
 
   @doc "Read an integer (big-endian, composed of N bits) from stream. Raises `KaitaiStruct.Stream.ReadError` on failure"
-  @spec read_bits_int_be!(stream :: pid(), n :: non_neg_integer()) :: integer()
-  def read_bits_int_be!(pid, n), do: read_bits_int_be(pid, n) |> respond_or_raise!()
+  @spec read_bits_int_be!(stream :: pid(), n :: non_neg_integer(), opts :: keyword()) :: integer()
+  def read_bits_int_be!(pid, n, opts \\ []), do: read_bits_int_be(pid, n, opts) |> respond_or_raise!()
 
   @doc "Read an array of `n` bits from stream."
-  @spec read_bits_array(stream :: pid(), n :: non_neg_integer()) ::
+  @spec read_bits_array(stream :: pid(), n :: non_neg_integer(), opts :: keyword()) ::
           {:ok, [boolean()]} | {:error, read_error()}
-  def read_bits_array(pid, n), do: GenServer.call(pid, {:read, :bit_array, n})
+  def read_bits_array(pid, n, opts \\ []), do: GenServer.call(pid, {:read, :bit_array, n}, opts[:timeout] || :infinity)
 
   @doc "Read an array of `n` bits from stream. Raises `KaitaiStruct.Stream.ReadError` on failure"
-  @spec read_bits_array!(stream :: pid(), n :: non_neg_integer()) :: [boolean()]
-  def read_bits_array!(pid, n), do: read_bits_array(pid, n) |> respond_or_raise!()
+  @spec read_bits_array!(stream :: pid(), n :: non_neg_integer(), opts :: keyword()) :: [boolean()]
+  def read_bits_array!(pid, n, opts \\ []), do: read_bits_array(pid, n, opts) |> respond_or_raise!()
 
   @doc "An array of `n` bytes from stream."
-  @spec read_bytes_array(stream :: pid(), n :: non_neg_integer()) ::
+  @spec read_bytes_array(stream :: pid(), n :: non_neg_integer(), opts :: keyword()) ::
           {:ok, binary()} | {:error, read_error()}
-  def read_bytes_array(pid, n), do: GenServer.call(pid, {:read, :byte_array, n})
+  def read_bytes_array(pid, n, opts \\ []), do: GenServer.call(pid, {:read, :byte_array, n}, opts[:timeout] || :infinity)
 
   @doc "An array of `n` bytes from stream. Raises `KaitaiStruct.Stream.ReadError` on failure"
-  @spec read_bytes_array!(stream :: pid(), n :: non_neg_integer()) :: binary()
-  def read_bytes_array!(pid, n), do: read_bytes_array(pid, n) |> respond_or_raise!()
+  @spec read_bytes_array!(stream :: pid(), n :: non_neg_integer(), opts :: keyword()) :: binary()
+  def read_bytes_array!(pid, n, opts \\ []), do: read_bytes_array(pid, n, opts) |> respond_or_raise!()
 
   @doc "An array of all remaining bytes from stream."
-  @spec read_bytes_full(stream :: pid()) :: {:ok, binary()} | {:error, read_error()}
-  def read_bytes_full(pid), do: GenServer.call(pid, {:read, :byte_array_full})
+  @spec read_bytes_full(stream :: pid(), opts :: keyword()) :: {:ok, binary()} | {:error, read_error()}
+  def read_bytes_full(pid, opts \\ []), do: GenServer.call(pid, {:read, :byte_array_full}, opts[:timeout] || :infinity)
 
   @doc "An array of all remaining bytes from stream. Raises `KaitaiStruct.Stream.ReadError` on failure"
-  @spec read_bytes_full!(stream :: pid()) :: binary()
-  def read_bytes_full!(pid), do: read_bytes_full(pid) |> respond_or_raise!()
+  @spec read_bytes_full!(stream :: pid(), opts :: keyword()) :: binary()
+  def read_bytes_full!(pid, opts \\ []), do: read_bytes_full(pid, opts) |> respond_or_raise!()
 
   @doc """
   Read bytes until the character (in the given encoding) is reached. Accepted encodings at `KaitaiStruct.encodings/0`
@@ -259,19 +259,21 @@ defmodule KaitaiStruct.Stream do
           term :: integer(),
           include_term :: boolean(),
           consume_term :: boolean(),
-          eos_error :: boolean()
+          eos_error :: boolean(),
+          opts :: keyword()
         ) ::
           {:ok, binary()}
           | {:error, read_error()}
           | {:error, :unsupported_encoding}
           | {:error, {:term_encoding_error, term()}}
-  def read_bytes_term(pid, encoding, term, include_term, consume_term, eos_error) do
+  def read_bytes_term(pid, encoding, term, include_term, consume_term, eos_error, opts \\ []) do
     if encoding = Map.get(KaitaiStruct.encodings(), encoding) do
       case :unicode.characters_to_binary(term, KaitaiStruct.native_encoding(), encoding) do
         term_bin when is_binary(term_bin) ->
           GenServer.call(
             pid,
-            {:read, {:bytes_term, term_bin, include_term, consume_term, eos_error}}
+            {:read, {:bytes_term, term_bin, include_term, consume_term, eos_error}},
+            opts[:timeout] || :infinity
           )
 
         unexpected ->
@@ -292,28 +294,29 @@ defmodule KaitaiStruct.Stream do
           term :: integer(),
           include_term :: boolean(),
           consume_term :: boolean(),
-          eos_error :: boolean()
+          eos_error :: boolean(),
+          opts :: keyword()
         ) :: binary()
-  def read_bytes_term!(pid, encoding, term, include_term, consume_term, eos_error) do
-    read_bytes_term(pid, encoding, term, include_term, consume_term, eos_error)
+  def read_bytes_term!(pid, encoding, term, include_term, consume_term, eos_error, opts \\ []) do
+    read_bytes_term(pid, encoding, term, include_term, consume_term, eos_error, opts)
     |> respond_or_raise!()
   end
 
   @doc "Takes a list of bytes and ensures that the next bytes in the stream are an exact match"
-  @spec ensure_fixed_contents(stream :: pid(), contents :: binary()) ::
+  @spec ensure_fixed_contents(stream :: pid(), contents :: binary(), opts :: keyword()) ::
           :ok | {:error, read_error()} | {:error, {:fixed_contents_mismatch, integer(), String.t()}}
-  def ensure_fixed_contents(pid, contents) do
-    GenServer.call(pid, {:ensure, {:fixed_contents, contents}})
+  def ensure_fixed_contents(pid, contents, opts \\ []) do
+    GenServer.call(pid, {:ensure, {:fixed_contents, contents}}, opts[:timeout] || :infinity)
   end
 
   @doc "Takes a list of bytes and ensures that the next bytes in the stream are an exact match. Raises `KaitaiStruct.Stream.ReadError` on failure"
-  @spec ensure_fixed_contents!(stream :: pid(), contents :: binary()) :: :ok
-  def ensure_fixed_contents!(pid, contents),
-    do: ensure_fixed_contents(pid, contents) |> respond_or_raise!()
+  @spec ensure_fixed_contents!(stream :: pid(), contents :: binary(), opts :: keyword()) :: :ok
+  def ensure_fixed_contents!(pid, contents, opts \\ []),
+    do: ensure_fixed_contents(pid, contents, opts) |> respond_or_raise!()
 
-  @spec repeat(stream :: pid(), until_cond :: :eos, read_fn :: fun()) :: [term()]
-  def repeat(pid, :eos, data_fn, idx \\ 0) do
-    if eof?(pid), do: [], else: [data_fn.(pid, idx) | repeat(pid, :eos, data_fn, idx + 1)]
+  @spec repeat(stream :: pid(), until_cond :: :eos, read_fn :: fun(), opts :: keyword()) :: [term()]
+  def repeat(pid, :eos, data_fn, idx \\ 0, opts \\ []) do
+    if eof?(pid, opts), do: [], else: [data_fn.(pid, idx) | repeat(pid, :eos, data_fn, idx + 1, opts)]
   end
 
   defp respond_or_raise!(resp) do
