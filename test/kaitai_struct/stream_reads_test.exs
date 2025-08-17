@@ -1143,6 +1143,22 @@ defmodule KaitaiStruct.StreamReadsTest do
              end)
   end
 
+  test "substream/2 creates a substream of a fixed size, while immediately skipping forward in the base stream" do
+    stream = binary_stream(<<0xAA, 0xBB, 0xCC, 0xDD, 0xEE, 0xFF>>)
+    assert 0xAA == KaitaiStruct.Stream.read_u1!(stream)
+    assert 1 == KaitaiStruct.Stream.pos(stream)
+
+    substream = KaitaiStruct.Stream.substream!(stream, 3)
+    assert 0xEE == KaitaiStruct.Stream.read_u1!(stream)
+
+    assert KaitaiStruct.Stream.pos(substream) == 0
+    assert 0xBB == KaitaiStruct.Stream.read_u1!(substream)
+    assert KaitaiStruct.Stream.pos(substream) == 1
+    assert 0xFF == KaitaiStruct.Stream.read_u1!(stream)
+    assert 0xCC == KaitaiStruct.Stream.read_u1!(substream)
+    assert 0xDD == KaitaiStruct.Stream.read_u1!(substream)
+  end
+
   defp binary_stream(bin_data) do
     io_stream = StringIO.open(bin_data) |> then(fn {:ok, io} -> IO.binstream(io, 1) end)
     {:ok, kaitai} = GenServer.start_link(KaitaiStruct.Stream, {io_stream, byte_size(bin_data)})

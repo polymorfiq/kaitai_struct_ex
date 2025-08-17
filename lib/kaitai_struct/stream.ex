@@ -27,6 +27,13 @@ defmodule KaitaiStruct.Stream do
 
   @impl true
   def init({stream, size}), do: {:ok, stream_state(stream: stream, size_bits: size * 8)}
+  def init(state = stream_state()), do: {:ok, state}
+
+  @doc "Returns a substream of the given size, starting from the current position"
+  @spec substream!(stream :: t(), size :: non_neg_integer(), opts :: keyword()) :: t()
+  def substream!(pid, size, opts \\ []) do
+    GenServer.call(pid, {:substream, size}, opts[:timeout] || :infinity)
+  end
 
   @doc "Given a filename, attempts to generate a `KaitaiStruct.Stream` or raises an exception"
   @spec from_file!(path :: Path.t(), parse :: fun()) :: term()
@@ -336,6 +343,21 @@ defmodule KaitaiStruct.Stream do
   end
 
   @impl true
+  def handle_call({:substream, size}, _from, state) do
+    stream_state(pos_bits: pos_bits) = state
+
+    io_stream =
+      stream_state(state, :stream)
+      |> Enum.take(size)
+      |> :binary.list_to_bin()
+      |> StringIO.open()
+      |> then(fn {:ok, stream} -> IO.binstream(stream, 1) end)
+
+    {:ok, kaitai} = GenServer.start_link(__MODULE__, stream_state(state, stream: io_stream, pos_bits: 0, size_bits: size * 8))
+    {:reply, kaitai, stream_state(state, pos_bits: pos_bits + (size * 8))}
+  end
+
+  @impl true
   def handle_call(:eof?, _from, state),
     do: {:reply, stream_state(state, :pos_bits) == stream_state(state, :size_bits), state}
 
@@ -554,7 +576,7 @@ defmodule KaitaiStruct.Stream do
     buffer_size_bits = bit_size(buffer)
     bits_needed = Keyword.get(opts, :read_bits, n_bytes * 8)
     bits_from_buffer = min(bits_needed, buffer_size_bits)
-    bits_from_stream = bits_needed - bits_from_buffer
+    bits_from_stream = trunc(bits_needed - bits_from_buffer)
 
     cond do
       pos_bits + bits_from_stream > size_bits ->
@@ -562,8 +584,8 @@ defmodule KaitaiStruct.Stream do
 
       true ->
         bytes_from_stream = ceil(bits_from_stream / 8)
-        remaining_stream_bits = bytes_from_stream * 8 - bits_from_stream
-        remaining_buffer_bits = buffer_size_bits - bits_from_buffer
+        remaining_stream_bits = trunc(bytes_from_stream * 8 - bits_from_stream)
+        remaining_buffer_bits = trunc(buffer_size_bits - bits_from_buffer)
 
         raw_stream_bin =
           Stream.take(stream, bytes_from_stream) |> Enum.to_list() |> :binary.list_to_bin()
