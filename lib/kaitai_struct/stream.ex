@@ -32,7 +32,18 @@ defmodule KaitaiStruct.Stream do
   @doc "Returns a substream of the given size, starting from the current position"
   @spec substream!(stream :: t(), size :: non_neg_integer(), opts :: keyword()) :: t()
   def substream!(pid, size, opts \\ []) do
-    GenServer.call(pid, {:substream, size}, opts[:timeout] || :infinity)
+    {substream_state, bytes} = GenServer.call(pid, {:substream, size}, opts[:timeout] || :infinity)
+
+    io_stream =
+      bytes
+      |> :binary.list_to_bin()
+      |> StringIO.open()
+      |> then(fn {:ok, stream} -> IO.binstream(stream, 1) end)
+
+    substream_state = stream_state(substream_state, stream: io_stream)
+
+    {:ok, kaitai} = GenServer.start_link(__MODULE__, substream_state)
+    kaitai
   end
 
   @doc "Given a filename, attempts to generate a `KaitaiStruct.Stream` or raises an exception"
@@ -346,15 +357,11 @@ defmodule KaitaiStruct.Stream do
   def handle_call({:substream, size}, _from, state) do
     stream_state(pos_bits: pos_bits) = state
 
-    io_stream =
-      stream_state(state, :stream)
-      |> Enum.take(size)
-      |> :binary.list_to_bin()
-      |> StringIO.open()
-      |> then(fn {:ok, stream} -> IO.binstream(stream, 1) end)
+    substream_state = stream_state(state, pos_bits: 0, size_bits: size * 8)
+    substream_bytes = stream_state(state, :stream) |> Enum.take(size)
 
-    {:ok, kaitai} = GenServer.start_link(__MODULE__, stream_state(state, stream: io_stream, pos_bits: 0, size_bits: size * 8))
-    {:reply, kaitai, stream_state(state, pos_bits: pos_bits + (size * 8))}
+
+    {:reply, {substream_state, substream_bytes}, stream_state(state, pos_bits: pos_bits + (size * 8))}
   end
 
   @impl true
